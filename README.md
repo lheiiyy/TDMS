@@ -11,6 +11,7 @@ One web app for the Training Department (Training and Development Division, HRAD
 | Phase and module checklist (live, team-shared) | https://claude.ai/artifact/1MBxV4t8Np1C6E5YMnejoV |
 | Checklist (copy in repo) | [CHECKLIST.md](CHECKLIST.md) |
 | UI design (Claude Design, in progress) | [SVMI Command Center v2](https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share) |
+| UI/UX design brief (merged into the plan, Section 5) | [Oct 3 modernization plan](https://claude.ai/share/99d7f117-2fcf-47eb-ae80-6266dc28fe82) |
 | Module specs | [specs/](specs/) |
 | Rules for Claude Code | [CLAUDE.md](CLAUDE.md) |
 

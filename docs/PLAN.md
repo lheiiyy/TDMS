@@ -177,6 +177,45 @@ The system is split into four layers so that only the bottom layer changes durin
 
 The screens follow the [SVMI Command Center v2 design in Claude Design](https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share). It is the visual starting point for every TDMS module: layout, navigation, colors and components are taken from it and extended for the other modules. The design is still in progress, like the rest of the project, which remains in the planning phase. Each module spec lists the screens it adds to the design, and screen changes are made in the design first, then built.
 
+### Design brief (merged from the Oct 3 UI/UX modernization plan)
+
+The [SVMI UI/UX modernization plan](https://claude.ai/share/99d7f117-2fcf-47eb-ae80-6266dc28fe82) is now part of this plan. Its design direction applies to all of TDMS, not only store visits; the Claude Design file above is where it is drawn.
+
+Design principles carried over:
+
+- Dashboard first for supervisors and managers: summary cards with trend, then drill down to the records behind each number.
+- Mobile first for officers in the field: large touch targets (at least 44 px), 16 px body text, one-column forms.
+- Every action gives feedback (a toast that says what was saved), every list has a designed empty state, and loading shows a skeleton, never a blank screen.
+- Readable and accessible: WCAG 2.1 AA contrast, visible keyboard focus, labels on every field.
+- Reports can be exported to CSV and PDF.
+
+Navigation, mapped from the brief's six sections to TDMS modules:
+
+| Brief section | TDMS modules | Who sees it |
+| --- | --- | --- |
+| Dashboard | M7 home dashboard: summary cards, activity feed, quick actions, upcoming sessions | All roles (content by role) |
+| Store Visits | M5 store directory, new visit, visit history, visits this month; M6 CAPAR cases | All roles |
+| Proficiency and Certifications | M3 Team Leader program, M4 station proficiency and cross-training | All roles |
+| (added) Training | M1 orientation, M2 programs, sessions and attendance | All roles |
+| (added) Library | M8 SOPs, manuals, memos, FAQs, forms | All roles; restricted files for Supervisors and Admin |
+| Reports and Analytics | M7 report templates and exports; M9 KPI scorecards | Supervisors and up for M9 |
+| Admin and Settings | Users and roles, stores, team roster, lookups, audit log | System Admin |
+| User Profile | Own account and preferences | All roles |
+
+Key screen flows from the brief:
+
+1. New store visit as a guided form: store (type to search, shows last visit), visit details (officers, date, purposes), observations with photos, corrective actions (owner, due date, priority), then review and submit. Drafts save as the officer goes.
+2. Store directory as a list with status badges (risk tier, last visit, next due), filterable by brand, region and status.
+3. Report templates: store readiness (stores by visits, QA result and TL certification), compliance trend over 90 days, facilitator performance (KRA by officer), and brand summary.
+
+Where the brief and this plan differ, this plan wins for v1:
+
+- The brief proposes a standalone React or Vue front end on paid hosting. With no budget yet, v1 screens are built in Apps Script with the same design, and React or Vue comes at migration (Section 8).
+- Offline entry and voice notes are left out of v1 (see scope); drafts are kept on the server instead.
+- The brief's facilitator competency matrix is a different thing from staff station proficiency (M4). Officer performance belongs in M9 KPI monitoring.
+- Colours and type come from the Claude Design file, not from the brief's sample palette.
+- The brief's cost and time-saving figures were examples, not measured targets, and are not used here.
+
 ### Design rules for the Sheets database
 
 1. Separate files: one database spreadsheet (data only) and one Apps Script project (code only). No formulas, merged cells, colors or summary blocks in database tabs.
@@ -259,6 +298,8 @@ The build runs in eight phases over about 23 working weeks, one module at a time
 ![TDMS roadmap](roadmap.png)
 
 Each phase is done only when its old sheet is set to read-only and the team enters new records in TDMS alone. Every phase delivers a working screen, imported legacy data, a one-page module spec and a short user guide.
+
+Progress on every phase, module and feature (85 items) is tracked in the shared [TDMS Build Checklist](https://claude.ai/artifact/1MBxV4t8Np1C6E5YMnejoV), with a copy in `CHECKLIST.md` in the repository.
 
 ## 8. Migration plan to a full-stack web app
 

@@ -4,9 +4,9 @@
 
 Every phase, module and feature in the TDMS plan. The live, team-shared version is the [online checklist](https://claude.ai/artifact/1MBxV4t8Np1C6E5YMnejoV); tick items there and keep this file in step when a phase closes.
 
-Master plan: https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83dab · Copy: [docs/PLAN.md](docs/PLAN.md) · UI design: [SVMI Command Center v2 in Claude Design](https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share)
+Master plan: https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83dab · Copy: [docs/PLAN.md](docs/PLAN.md) · UI design: [SVMI Command Center v2 in Claude Design](https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share) · Design brief source: [UI/UX modernization plan](https://claude.ai/share/99d7f117-2fcf-47eb-ae80-6266dc28fe82)
 
-80 items across 9 stages. Module codes:
+85 items across 9 stages. Module codes:
 
 | Code | Module |
 | --- | --- |
@@ -33,6 +33,7 @@ Master plan: https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83da
 - [ ] `PLAN` Decide the source of truth for the employee list (HR masterlist or TDD records)
 - [ ] `PLAN` Confirm the system name for management
 - [ ] `PLAN` Finish the UI design in Claude Design (SVMI Command Center v2) and agree the screen style for all modules
+- [ ] `PLAN` Agree the navigation map: Dashboard, Store Visits, Training, Proficiency and Certifications, Library, Reports, Admin
 - [ ] `SYS` Create the database spreadsheet (data only) and the Apps Script project
 - [ ] `SYS` Connect the Apps Script project to the TDMS repo with clasp (test copy)
 - [ ] `SYS` Build the layers: repository, services, api.js, screen shell
@@ -51,10 +52,11 @@ Master plan: https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83da
 ## Phase 1: Store visits (from SVMI) (Weeks 4-6)
 
 - [ ] `M5` Write and approve the M5 store visit spec
-- [ ] `M5` Mobile visit entry screen
+- [ ] `M5` Mobile visit entry as a guided form: store, details, observations with photos, corrective actions, review; drafts saved
 - [ ] `M5` Several purposes and several officers per visit (child tables)
 - [ ] `M5` Store risk score using the approved SVMI model and LOW, MEDIUM, HIGH tiers
 - [ ] `M5` Store insights and visits-this-month views (SVMI portal layout kept)
+- [ ] `M5` Store directory with risk tier, last visit and next due badges, filtered by brand, region and status
 - [ ] `M5` Import the SVMI MASTER_LOG into store_visits
 - [ ] `M5` User guide for store visits
 
@@ -134,6 +136,9 @@ Master plan: https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83da
 - [ ] `SYS` Approvals queue in the restricted area
 - [ ] `M7` Supervisor and manager dashboards from summary tables
 - [ ] `M7` Monthly reports for management
+- [ ] `M7` Home dashboard: summary cards with trend, activity feed, quick actions
+- [ ] `M7` Report templates: store readiness, compliance trend, facilitator performance, brand summary
+- [ ] `M7` Export reports to CSV and PDF
 
 **Gate:** Management review
 

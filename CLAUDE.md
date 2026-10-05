@@ -13,6 +13,7 @@ Applies to this whole repository (lheiiyy/TDMS). Progress: `CHECKLIST.md` and ht
 ## UI design
 
 - Screens follow the SVMI Command Center v2 design in Claude Design: https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share
+- Design principles, navigation map and screen flows: the design brief in `docs/PLAN.md` (Section 5), merged from https://claude.ai/share/99d7f117-2fcf-47eb-ae80-6266dc28fe82. Where the brief and the plan differ, the plan wins for v1.
 - The design is still in progress. Make screen changes in the design first, then build them. Do not invent a new visual style.
 
 ## Architecture (do not break)
