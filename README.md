@@ -2,7 +2,7 @@
 
 One web app for the Training Department (Training and Development Division, HRAD) of Figaro Culinary Group, covering Angel's Pizza, Angel's Pizza Express, Tien Ma's, Koobideh Kebab and Figaro Coffee.
 
-**Status:** planning. No app code yet. Build starts after the plan is approved.
+**Status:** planning phase. No app code yet; the plan and the UI design are still in progress. Build starts after both are approved.
 
 | What | Where |
 | --- | --- |
@@ -10,6 +10,7 @@ One web app for the Training Department (Training and Development Division, HRAD
 | Master plan (copy in repo) | [docs/PLAN.md](docs/PLAN.md) |
 | Phase and module checklist (live, team-shared) | https://claude.ai/artifact/1MBxV4t8Np1C6E5YMnejoV |
 | Checklist (copy in repo) | [CHECKLIST.md](CHECKLIST.md) |
+| UI design (Claude Design, in progress) | [SVMI Command Center v2](https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share) |
 | Module specs | [specs/](specs/) |
 | Rules for Claude Code | [CLAUDE.md](CLAUDE.md) |
 

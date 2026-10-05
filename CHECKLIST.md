@@ -1,10 +1,12 @@
 # TDMS Build Checklist
 
+**Status:** planning phase.
+
 Every phase, module and feature in the TDMS plan. The live, team-shared version is the [online checklist](https://claude.ai/artifact/1MBxV4t8Np1C6E5YMnejoV); tick items there and keep this file in step when a phase closes.
 
-Master plan: https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83dab · Copy: [docs/PLAN.md](docs/PLAN.md)
+Master plan: https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83dab · Copy: [docs/PLAN.md](docs/PLAN.md) · UI design: [SVMI Command Center v2 in Claude Design](https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share)
 
-79 items across 9 stages. Module codes:
+80 items across 9 stages. Module codes:
 
 | Code | Module |
 | --- | --- |
@@ -30,6 +32,7 @@ Master plan: https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83da
 - [ ] `PLAN` Decide if store managers submit data directly in v1
 - [ ] `PLAN` Decide the source of truth for the employee list (HR masterlist or TDD records)
 - [ ] `PLAN` Confirm the system name for management
+- [ ] `PLAN` Finish the UI design in Claude Design (SVMI Command Center v2) and agree the screen style for all modules
 - [ ] `SYS` Create the database spreadsheet (data only) and the Apps Script project
 - [ ] `SYS` Connect the Apps Script project to the TDMS repo with clasp (test copy)
 - [ ] `SYS` Build the layers: repository, services, api.js, screen shell

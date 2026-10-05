@@ -32,7 +32,7 @@ Sections, in this order:
 3. Workflow - numbered status flow (e.g. Open -> Scheduled -> Verified -> Endorsed -> Closed), who moves each step, what is required at each step. Draw a diagram if it branches.
 4. Tables - for each table: name (snake_case), ID prefix, every column with type (text, number, date yyyy-mm-dd, timestamp, boolean, FK -> table), required yes/no, allowed values. Always include audit columns: created_at, created_by, updated_at, updated_by, is_active, row_version.
 5. Validation rules - per field and cross-field (e.g. verified_on >= audit_failed_on).
-6. Screens - list each screen: purpose, fields, filters, actions. Mobile-first for field officers.
+6. Screens - list each screen: purpose, fields, filters, actions. Mobile-first for field officers. Base them on the SVMI Command Center v2 design in Claude Design (https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share) and say which screens the design still needs.
 7. Reports and dashboard cards - each metric with its exact formula and source tables. For M9, start from the five KPI Hub KRAs (store visit compliance 25%, staff proficiency 25%, training delivery 20%, coaching and feedback 20%, attendance 10%) and mark which are auto-computed from TDMS.
 8. API functions - name, input JSON, output JSON (e.g. capar.list({status, brand_id, page}) -> {rows, total}). These names must not change at migration.
 9. Files (if any) - for M8 or any module with attachments: Drive folder, allowed types, versioning, restricted flag, which roles can view, download, upload.

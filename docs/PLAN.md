@@ -173,6 +173,10 @@ The system is split into four layers so that only the bottom layer changes durin
 | Services (business rules) | `.gs` service files per module | Node.js or similar service files | Validation, status rules, scoring formulas |
 | Data access | One repository module that reads and writes Sheets | Repository using SQL (e.g. PostgreSQL) | Table and column names, IDs, data types |
 
+### UI design reference
+
+The screens follow the [SVMI Command Center v2 design in Claude Design](https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share). It is the visual starting point for every TDMS module: layout, navigation, colors and components are taken from it and extended for the other modules. The design is still in progress, like the rest of the project, which remains in the planning phase. Each module spec lists the screens it adds to the design, and screen changes are made in the design first, then built.
+
 ### Design rules for the Sheets database
 
 1. Separate files: one database spreadsheet (data only) and one Apps Script project (code only). No formulas, merged cells, colors or summary blocks in database tabs.

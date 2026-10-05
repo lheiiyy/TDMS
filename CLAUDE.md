@@ -10,6 +10,11 @@ Applies to this whole repository (lheiiyy/TDMS). Progress: `CHECKLIST.md` and ht
 - Build working screens first; keep docs short. Ground fixes in the actual code and observed behaviour.
 - Use the `tdms-module-planning` skill before building any new module.
 
+## UI design
+
+- Screens follow the SVMI Command Center v2 design in Claude Design: https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share
+- The design is still in progress. Make screen changes in the design first, then build them. Do not invent a new visual style.
+
 ## Architecture (do not break)
 
 1. Layers: screens -> `api.js` -> services -> repository. Only the repository calls `SpreadsheetApp`. Screens never call `google.script.run` directly.
