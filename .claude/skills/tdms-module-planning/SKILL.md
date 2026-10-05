@@ -9,6 +9,8 @@ Use this when Leo asks to plan, spec, redesign or scope any part of TDMS for the
 
 Master plan (source of truth for architecture and table names): https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83dab (copy in `docs/PLAN.md`)
 Code and specs: private GitHub repo `lheiiyy/TDMS` (specs go in `specs/`, progress in `CHECKLIST.md`).
+Shared progress checklist: https://claude.ai/artifact/1MBxV4t8Np1C6E5YMnejoV (items live in its `checks` collection, one document per item id, e.g. `p1-02`).
+UI design (in progress): SVMI Command Center v2 in Claude Design, https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share
 
 Reply to Leo in Taglish. Write the spec itself in plain, formal English with no AI-sounding phrasing (it may go to management).
 
