@@ -7,16 +7,19 @@ description: Plan a TDMS (Training and Development Management System) module or 
 
 Use this when Leo asks to plan, spec, redesign or scope any part of TDMS for the Training Department of Figaro Culinary Group: M0 core master data, M1 orientation, M2 training sessions, M3 Team Leader program, M4 proficiency/cross-training, M5 store visits, M6 CAPAR, M7 dashboards, M8 resource library (SOPs, manuals, memorandums, FAQs, forms, exams), M9 KPI monitoring, the restricted Supervisor/Admin area, or a new module. For a brand-new app that is not part of TDMS, use `web-app-project-planning` instead.
 
-Master plan (source of truth for architecture and table names): https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83dab (copy in `docs/PLAN.md`)
+Project status: planning phase. Nothing is built yet.
+
+Master plan (source of truth for architecture, table names and the design brief): https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83dab (copy in `docs/PLAN.md`)
 Code and specs: private GitHub repo `lheiiyy/TDMS` (specs go in `specs/`, progress in `CHECKLIST.md`).
 Shared progress checklist: https://claude.ai/artifact/1MBxV4t8Np1C6E5YMnejoV (items live in its `checks` collection, one document per item id, e.g. `p1-02`).
 UI design (in progress): SVMI Command Center v2 in Claude Design, https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share
+UI/UX design brief (merged into the master plan, Section 5): https://claude.ai/share/99d7f117-2fcf-47eb-ae80-6266dc28fe82
 
 Reply to Leo in Taglish. Write the spec itself in plain, formal English with no AI-sounding phrasing (it may go to management).
 
 ## Step 1 - Gather context (silently, before asking anything)
 
-1. Read the master plan above: Sections 3 (roles and restricted area), 5 (design rules) and 6 (data model).
+1. Read the master plan above: Sections 3 (roles and restricted area), 5 (design rules, UI design reference and design brief) and 6 (data model).
 2. Read `CLAUDE.md` in `lheiiyy/TDMS`, and check `database/migrations/` in `lheiiyy/TddProjectai` for tables that already exist in the SVMI PostgreSQL schema; reuse their names where they overlap.
 3. Find the legacy source this module replaces. Google Drive (TDD Core Room folder, or search by title): TOIS PMS DATABASE, [sys] Team leader Monitoring, [sys] STORE VISIT 2026, CAPAR RECTIFICATION MONITORING, Training Program & Delivery Monitoring 2026, CROSS TRAINED STAFFS MONITORING. GitHub `lheiiyy/TddProjectai`: `SVMI_Project/` for store visits, `TLM_Project/` for Team Leader monitoring, `lheiiyy/KPI-MONITORING-HUB` for KPI/KRA rules and the session/attendance pages. Read the real columns and sample rows.
 4. List what the legacy data gets wrong: names used as keys, several values in one cell, mixed date formats, monthly or status tabs, free-typed enums.
@@ -34,7 +37,7 @@ Sections, in this order:
 3. Workflow - numbered status flow (e.g. Open -> Scheduled -> Verified -> Endorsed -> Closed), who moves each step, what is required at each step. Draw a diagram if it branches.
 4. Tables - for each table: name (snake_case), ID prefix, every column with type (text, number, date yyyy-mm-dd, timestamp, boolean, FK -> table), required yes/no, allowed values. Always include audit columns: created_at, created_by, updated_at, updated_by, is_active, row_version.
 5. Validation rules - per field and cross-field (e.g. verified_on >= audit_failed_on).
-6. Screens - list each screen: purpose, fields, filters, actions. Mobile-first for field officers. Base them on the SVMI Command Center v2 design in Claude Design (https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share) and say which screens the design still needs.
+6. Screens - list each screen: purpose, fields, filters, actions. Mobile-first for field officers. Place each screen in the navigation map from the design brief, base it on the Claude Design file, and say which screens the design still needs; screen changes are made in the design first, then built.
 7. Reports and dashboard cards - each metric with its exact formula and source tables. For M9, start from the five KPI Hub KRAs (store visit compliance 25%, staff proficiency 25%, training delivery 20%, coaching and feedback 20%, attendance 10%) and mark which are auto-computed from TDMS.
 8. API functions - name, input JSON, output JSON (e.g. capar.list({status, brand_id, page}) -> {rows, total}). These names must not change at migration.
 9. Files (if any) - for M8 or any module with attachments: Drive folder, allowed types, versioning, restricted flag, which roles can view, download, upload.
@@ -53,6 +56,7 @@ Sections, in this order:
 - [ ] Only the repository layer touches SpreadsheetApp; screens call api.js only.
 - [ ] Restricted data is checked on the server, not only hidden in the menu.
 - [ ] Screens page results (about 50 rows); dashboards read summary tables.
+- [ ] Screens match the Claude Design file and the design brief principles (feedback toasts, empty states, 44 px touch targets); no new visual style invented.
 - [ ] Table and column names match Section 6 of the master plan and `database/migrations/`, or the plan is updated too.
 - [ ] Scoring or structural changes are flagged for Leo's approval before build.
 
