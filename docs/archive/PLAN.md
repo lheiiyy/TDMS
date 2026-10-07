@@ -1,3 +1,5 @@
+> Superseded by docs/ROADMAP.md (2026-10-08)
+
 # Training and Development Management System (TDMS)
 
 Project Description and Development Plan · Figaro Culinary Group · Training and Development Division, HRAD
@@ -53,12 +55,12 @@ The existing sheets hold real, usable data (about 250 stores and 2,190 employee 
 
 | Current file / module | What it tracks | Main issue found | Carry into TDMS |
 | --- | --- | --- | --- |
-| [TOIS PMS DATABASE](https://docs.google.com/spreadsheets/d/1kfsvMAGBYik0nPUkdYJ1Pp_XTOo4FhTZnQ5awjsLTg4/edit) | Brands, stores, positions, stations, employees, station certifications, store submissions, audit log | Store Code equals Store Name; Store ID and Brand ID columns empty; CONFIG\_STATIONS uses brand names instead of codes; certification dates in two date formats and duplicate columns; slow loading as rows grow | CONFIG\_STORES and EMPLOYEE\_MASTER as seed data; the AUDIT\_LOG design |
-| [Team Leader Monitoring](https://docs.google.com/spreadsheets/d/137AyWSnYOvtizgjNHGVuZqvFBpHCjxcvzrp37ujBNvU/edit) | TL entry, probation, validations, certification, promotion, quit, uniforms | Same people copied into PROBATIONARY, CERTIFIED, FAILED/QUIT and CEBU TL tabs; key is name + store + date; uniforms stored as text such as "2 SMALL \| 1 XLARGE (DR#...)" | The TL lifecycle stages and grade fields; UNIFORM\_LOG as a proper issue log |
+| TOIS PMS DATABASE (link removed; see Leo) | Brands, stores, positions, stations, employees, station certifications, store submissions, audit log | Store Code equals Store Name; Store ID and Brand ID columns empty; CONFIG\_STATIONS uses brand names instead of codes; certification dates in two date formats and duplicate columns; slow loading as rows grow | CONFIG\_STORES and EMPLOYEE\_MASTER as seed data; the AUDIT\_LOG design |
+| Team Leader Monitoring (link removed; see Leo) | TL entry, probation, validations, certification, promotion, quit, uniforms | Same people copied into PROBATIONARY, CERTIFIED, FAILED/QUIT and CEBU TL tabs; key is name + store + date; uniforms stored as text such as "2 SMALL \| 1 XLARGE (DR#...)" | The TL lifecycle stages and grade fields; UNIFORM\_LOG as a proper issue log |
 | Store Visit 2026 / SVMI (live web app) | Store visits, risk score, dashboards | Visitors stored as pipe-separated names; brand names with different apostrophes | The approved risk scoring model and the four-tab portal layout |
-| [CAPAR Rectification Monitoring](https://docs.google.com/spreadsheets/d/1otNBddAYE4d6hF-ahdMwS8jxoSoOQwNRjmcJgIbwbDw/edit) | Failed audits, schedule, verification visit, QA status, report link | One tab per month; dates typed as "SEPT 3" or "Aug 22" with no year; audit type spelled several ways; QA endorsement date mostly blank | The CAPAR stages: failed, scheduled, verified, endorsed, closed |
-| [Training Program and Delivery Monitoring 2026](https://docs.google.com/spreadsheets/d/1mp4-6KHcX5iDB5Oto1Smjfyq-xW4KAZCC8CA09hhpB4/edit) | Training sessions, pax, post-test average | Facilitators typed as comma-separated names | Session ID format and the training type list |
-| [Cross Trained Staffs Monitoring](https://docs.google.com/spreadsheets/d/1UxWuZG1kqazqotlMeCyuRNCNYLFNYoQXg8rzEJ_CAQw/edit) | Cross-station validations with grades | Several stations and grades in one cell ("SVC-92/CAS-90"); store names vary ("AP DAU" vs "DAU") | Becomes one row per station validation in the proficiency module |
+| CAPAR Rectification Monitoring (link removed; see Leo) | Failed audits, schedule, verification visit, QA status, report link | One tab per month; dates typed as "SEPT 3" or "Aug 22" with no year; audit type spelled several ways; QA endorsement date mostly blank | The CAPAR stages: failed, scheduled, verified, endorsed, closed |
+| Training Program and Delivery Monitoring 2026 (link removed; see Leo) | Training sessions, pax, post-test average | Facilitators typed as comma-separated names | Session ID format and the training type list |
+| Cross Trained Staffs Monitoring (link removed; see Leo) | Cross-station validations with grades | Several stations and grades in one cell ("SVC-92/CAS-90"); store names vary ("AP DAU" vs "DAU") | Becomes one row per station validation in the proficiency module |
 
 ### Lessons to apply
 

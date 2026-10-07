@@ -2,16 +2,16 @@
 
 One web app for the Training Department (Training and Development Division, HRAD) of Figaro Culinary Group, covering Angel's Pizza, Angel's Pizza Express, Tien Ma's, Koobideh Kebab and Figaro Coffee.
 
-**Status:** planning phase. No app code yet; the plan and the UI design are still in progress. Build starts after both are approved.
+**Status:** Phase 0 (repository, test runner, architecture checks). No app code yet. Current state: [docs/PROJECT-STATE.md](docs/PROJECT-STATE.md).
 
 | What | Where |
 | --- | --- |
-| Master plan (live, editable) | https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83dab |
-| Master plan (copy in repo) | [docs/PLAN.md](docs/PLAN.md) |
-| Phase and module checklist (live, team-shared) | https://claude.ai/artifact/1MBxV4t8Np1C6E5YMnejoV |
-| Checklist (copy in repo) | [CHECKLIST.md](CHECKLIST.md) |
+| Implementation roadmap (the plan) | [docs/ROADMAP.md](docs/ROADMAP.md) |
+| Documentation index | [docs/README.md](docs/README.md) |
+| Old master plan (superseded, archived) | [docs/archive/PLAN.md](docs/archive/PLAN.md) |
+| Old checklist (superseded, archived) | [docs/archive/CHECKLIST.md](docs/archive/CHECKLIST.md) |
 | UI design (Claude Design, in progress) | [SVMI Command Center v2](https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share) |
-| UI/UX design brief (merged into the plan, Section 5) | [Oct 3 modernization plan](https://claude.ai/share/99d7f117-2fcf-47eb-ae80-6266dc28fe82) |
+| UI/UX design brief (in the archived plan, Section 5) | [Oct 3 modernization plan](https://claude.ai/share/99d7f117-2fcf-47eb-ae80-6266dc28fe82) |
 | Module specs | [specs/](specs/) |
 | Rules for Claude Code | [CLAUDE.md](CLAUDE.md) |
 
@@ -41,18 +41,20 @@ screens (HTML/JS)  ->  api.js  ->  services (*.gs, business rules)  ->  reposito
                                                                         later: PostgreSQL
 ```
 
-Planned layout (created when Phase 0 starts):
+Repository layout ([ARCHITECTURE §0.3](docs/ARCHITECTURE.md)); each folder has a README with its layer rule:
 
 ```
-README.md        this file
 CLAUDE.md        rules for Claude Code sessions
-CHECKLIST.md     phases, modules and features
-docs/            plan, roadmap, user guides
+docs/            baseline documents, roadmap, archive/
 specs/           one spec per module
-apps-script/     .gs services, repository, api, appsscript.json, .clasp.json (test copy)
-web/             screens, api.js, styles
-tests/           service and repository tests
+src/             api, services, rules, repository, platform, core, ui/{shell,modules}
+config/          settings, schema, permissions
+tests/           rules, services, repository, arch (npm test)
+tools/           owner-run clasp, deploy, schema and seed scripts
+spikes/          throwaway feasibility spikes
 ```
+
+Run the checks with `npm test` (Node 22+, no dependencies).
 
 ## Planning skills
 

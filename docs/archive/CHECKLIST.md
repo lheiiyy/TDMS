@@ -1,10 +1,12 @@
+> Superseded by docs/ROADMAP.md (2026-10-08)
+
 # TDMS Build Checklist
 
 **Status:** planning phase.
 
 Every phase, module and feature in the TDMS plan. The live, team-shared version is the [online checklist](https://claude.ai/artifact/1MBxV4t8Np1C6E5YMnejoV); tick items there and keep this file in step when a phase closes.
 
-Master plan: https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83dab · Copy: [docs/PLAN.md](docs/PLAN.md) · UI design: [SVMI Command Center v2 in Claude Design](https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share) · Design brief source: [UI/UX modernization plan](https://claude.ai/share/99d7f117-2fcf-47eb-ae80-6266dc28fe82)
+Master plan: https://claude.ai/code/artifact/f89076cb-9986-4a8a-abe2-f0eb70d83dab · Copy: [docs/PLAN.md](PLAN.md) · UI design: [SVMI Command Center v2 in Claude Design](https://claude.ai/design/p/2ed405f3-0ef3-42e2-9b79-93e0f03653d0?file=SVMI+Command+Center+v2.dc.html&via=share) · Design brief source: [UI/UX modernization plan](https://claude.ai/share/99d7f117-2fcf-47eb-ae80-6266dc28fe82)
 
 85 items across 9 stages. Module codes:
 
