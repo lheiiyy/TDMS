@@ -1,3 +1,5 @@
+> Superseded by docs/ROADMAP.md (2026-10-08)
+
 # Training and Development Management System (TDMS)
 
 Project Description and Development Plan · Figaro Culinary Group · Training and Development Division, HRAD
