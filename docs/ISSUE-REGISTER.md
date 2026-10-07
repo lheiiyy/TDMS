@@ -70,5 +70,5 @@ Status: all **OPEN** unless stated. "Needs" = who/what resolves it. Class tags a
 | PROP-002 | `Cancelled` plan status | WORKFLOWS WF-003 | D068 wording ("cancelled") |
 | PROP-003 | Transient "Closing" state for month close | WORKFLOWS WF-006 | Snapshot job can exceed one script run |
 | PROP-004 | One audit mechanism with three views (audit log, field history, status history) | DATA-MODEL §3 | §7.5, §7.6, §7.10, D023, D048 overlap (ISS-P0-02, gate G-05) |
-| PROP-005 | Store Health engine before CAPAR data (phase order) | ROADMAP §3 | §10 phase 2 reads phase 3 data |
-| PROP-006 | Bundle version stamp: results reference one bundle version of the settings used | CONFIGURATION Part 2, DATA-MODEL §15 | Meets the rule "store the applicable rule/version with the result" with one reference (CD-38) |
+| PROP-005 | **APPROVED 2026-10-08.** Store Health engine before CAPAR data (phase order) | ROADMAP §3 | §10 phase 2 reads phase 3 data |
+| PROP-006 | **APPROVED 2026-10-08.** Bundle version stamp: results reference one bundle version of the settings used | CONFIGURATION Part 2, DATA-MODEL §15 | Meets the rule "store the applicable rule/version with the result" with one reference (CD-38) |

@@ -305,7 +305,7 @@ Everything here is open. "Recommended" is a suggestion only; none is approved. N
 | CD-19 | CFG-084 | Coaching survey source and maximum score | §11, ISS-P1-09 | KPI | — |
 | CD-20 | CFG-090 | Month-close deadline day: fixed at the 5th or configurable? | D036, Audit §E, ISS-P1-13 | Month end | Treat as fixed until decided |
 | CD-21 | CFG-091 | Daily digest time, opt-out | Audit §E, ISS-P1-13 | Notifications | — |
-| CD-22 | CFG-093 | Backup retention count | §11, ISS-P1-14 | Hardening | — |
+| CD-22 | CFG-093 | Backup retention count | §11, ISS-P1-14 | Hardening | **Count = 14 (Leo, 2026-10-08)**; file-backup scope still open (AO-05) |
 | CD-23 | CFG-104 | Time zone for "today", working days, month close | ISS-P0-17 | Core utilities | Leo names the zone |
 | CD-24 | CFG-105 (new) | Maximum length of a delegation. WF-007 requires an end date but states no limit | WF-007, D015 | Delegation | Leo confirms whether a limit exists |
 | CD-25 | CFG-106 (new) | Recycle-bin purge policy (who, when, retention). DATA-MODEL says "Admin, audited" | D021, ENT-116 | Admin | — |
@@ -326,7 +326,7 @@ Everything here is open. "Recommended" is a suggestion only; none is approved. N
 | CD-35 | Renaming a list item: label change only, or new item? | A rename changes every old record's displayed label | Rename = label only; change of meaning = new item |
 | CD-36 | Does a changed officer edit window (CFG-004) apply to records already past the old window? | Could re-open locked records | Evaluate at the edit attempt with the current version; confirm |
 | CD-37 | **Store Health year-to-date across a mid-year rule change.** The window is the year to date. Recompute earlier months with the new rules, or carry the frozen values of closed months? | Recomputing silently rewrites past scores (critical rule) | Carry frozen closed-month values; apply new rules to the open month and later |
-| CD-38 | Bundle-version stamp (PROP-006, DM-A0): confirm the design | Needed to meet the stamp rule with one reference per result | Adopt |
+| CD-38 | Bundle-version stamp (PROP-006, DM-A0): confirm the design | Needed to meet the stamp rule with one reference per result | **Adopted (Leo, 2026-10-08)** |
 | CD-39 | Who may view and who may configure on the Configuration screens (S, M, Sr) | CON-03 / AMB-07: prototype vs Handover differ | Admin configures; M Sr view; S per Leo |
 
 ---

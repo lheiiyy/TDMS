@@ -177,3 +177,7 @@ Also tick §11 item 1 as resolved: D2/§3/§9 already settle Store Head and Area
 | Schema rule (old CLAUDE.md #11) | DATA-MODEL is the schema authority; `lheiiyy/TddProjectai` SVMI PostgreSQL schema is reference only. | Old rule #11 dropped. |
 | G-03 | Time zone **Asia/Manila**. | Slice 1-001 and the manifest time zone unblocked. |
 | G-01 | **Interim:** personal Gmail `lheii.fcsitraining@gmail.com` owns the **dev and test** environments only. | 0-002, 0-003, spikes 0-005..0-009 may run. D012 (company account) is **not** reopened: **0-004 (live shell) and any live data stay blocked until the company account is named** (or Leo records an explicit D012 amendment). Spike results (mail/trigger quotas, S-06) are valid for a standard Gmail only and must be re-checked on the live account. |
+| G-02 | Keep **14** nightly backups (CFG-093 = 14; also resolves ISS-P1-14 and CD-22 count; file-backup scope AO-05 stays open). | Slice 6-006 unblocked. |
+| PROP-005 | **Approved:** Store Health rules take the CAPAR failure list as an input parameter (9-005); real CAPAR data wired in 10-008. | ROADMAP conflict R-06 closed. |
+| PROP-006 / CD-38 | **Approved:** each result stores one bundle-version stamp (DM-A0, DM-A1..A12). | Slice 3-002 unblocked. |
+| G-05 | **Pending.** Leo will read DATA-MODEL himself; not yet approved. | Slice 2-001 stays blocked. |
