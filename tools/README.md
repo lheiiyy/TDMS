@@ -1,6 +1,26 @@
 # tools
 
-Owner-run scripts: clasp, deploy, schema check, seed. None exist yet (TDMS-0-001 adds structure only).
+Owner-run scripts: clasp, deploy, schema check, seed.
+
+| Script | Status |
+| --- | --- |
+| `deploy.js` | available (TDMS-0-002) |
+| schema check, seed, promotion | later slices |
+
+## deploy.js
+
+```
+node tools/deploy.js <dev|test|live> [--live] [--dry-run]
+```
+
+Pushes `src/` with `clasp push --project .clasp.<env>.json`. No dependencies; needs `clasp` installed. It refuses (exit 1, nothing pushed) when:
+
+- the environment is missing or not `dev`, `test` or `live`;
+- `live` is requested without `--live`, or `--live` is used with another environment;
+- `.clasp.<env>.json` is missing, is not valid JSON, still has the template `scriptId`, or has a `rootDir` other than `src`;
+- `src/appsscript.json` is missing.
+
+`--dry-run` prints the command and pushes nothing. Setup steps: [docs/runbooks/dev-environment.md](../docs/runbooks/dev-environment.md).
 
 ## Future deploy flow (ARCHITECTURE §16.4, approved layout)
 
@@ -13,4 +33,4 @@ Owner-run scripts: clasp, deploy, schema check, seed. None exist yet (TDMS-0-001
 
 ## clasp configuration
 
-Copy `.clasp.json.template` (repo root) to `.clasp.json` locally and fill in the script ID for the environment you are working on. `.clasp.json`, `.clasprc.json` and `.env*` are git-ignored. Never commit script, spreadsheet or Drive IDs.
+Copy `.clasp.json.template` (repo root) to `.clasp.<env>.json` locally (for example `.clasp.dev.json`) and fill in the script ID for that environment. `.clasp.json`, `.clasp.*.json`, `.clasprc.json` and `.env*` are git-ignored. Never commit script, spreadsheet or Drive IDs.

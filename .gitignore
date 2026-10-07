@@ -20,6 +20,10 @@ Thumbs.db
 .clasp.json
 **/.clasp.json
 
+# Per-environment clasp configs (.clasp.dev.json, .clasp.test.json, .clasp.live.json), used by tools/deploy.js.
+.clasp.*.json
+**/.clasp.*.json
+
 # Local environment files
 .env
 .env.*
