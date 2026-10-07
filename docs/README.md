@@ -40,4 +40,10 @@ Claude Code reads, in order: `CLAUDE.md` -> [PROJECT-STATE](PROJECT-STATE.md) ->
 | [GAP-MATRIX](GAP-MATRIX.md) | Prototype versus production gaps |
 | [ISSUE-REGISTER](ISSUE-REGISTER.md) | Issues ISS-P0/P1.. (superseded where the gate says so) |
 
+## Runbooks
+
+| Doc | Purpose |
+| --- | --- |
+| [runbooks/dev-environment](runbooks/dev-environment.md) | Steps to create the dev environment (TDMS-0-002) |
+
 Also here: `roadmap.png` (roadmap picture).
