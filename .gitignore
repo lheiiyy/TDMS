@@ -15,3 +15,11 @@ npm-debug.log*
 # OS noise
 .DS_Store
 Thumbs.db
+
+# Real clasp project config: carries a script ID. Use .clasp.json.template instead.
+.clasp.json
+**/.clasp.json
+
+# Local environment files
+.env
+.env.*
