@@ -169,3 +169,11 @@ Exact blockers:
 
 Before the first data-layer task (not before bootstrapping the repo): **G-05** approve DATA-MODEL and the history design.
 Also tick §11 item 1 as resolved: D2/§3/§9 already settle Store Head and Area Manager (role in the model now, accounts in v2).
+
+## Gate answers recorded (Leo, 2026-10-08)
+| Gate | Answer | Effect |
+| --- | --- | --- |
+| G-04 | Option A: archive the old repo plan (`docs/PLAN.md`, `CHECKLIST.md` → `docs/archive/`); baseline docs are the plan; CLAUDE.md merged (Leo's working rules + layer rules). | TDMS-0-001 may be issued. |
+| Schema rule (old CLAUDE.md #11) | DATA-MODEL is the schema authority; `lheiiyy/TddProjectai` SVMI PostgreSQL schema is reference only. | Old rule #11 dropped. |
+| G-03 | Time zone **Asia/Manila**. | Slice 1-001 and the manifest time zone unblocked. |
+| G-01 | **Interim:** personal Gmail `lheii.fcsitraining@gmail.com` owns the **dev and test** environments only. | 0-002, 0-003, spikes 0-005..0-009 may run. D012 (company account) is **not** reopened: **0-004 (live shell) and any live data stay blocked until the company account is named** (or Leo records an explicit D012 amendment). Spike results (mail/trigger quotas, S-06) are valid for a standard Gmail only and must be re-checked on the live account. |
