@@ -1,0 +1,9 @@
+# Changelog
+- 2026-10-07 v0.1 — first baseline set drafted (A–J plus docs skeletons). No code.
+- 2026-10-07 v0.2 — permanent docs: PROJECT-BIBLE, REQUIREMENTS (REQ-001..108), DECISIONS (D001..D068, approved only), PROJECT-STATE rewritten; DEC- ids renamed to Dnnn across docs; proposals moved to ISSUE-REGISTER appendix; DECISION-GATE added.
+- 2026-10-07 v0.3 — DATA-MODEL v1.0 final logical model: profiles, 13-attribute entity definitions, ownership matrix; blocker M1/G-05.
+- 2026-10-07 v0.4 — PERMISSIONS v1.0 final authorization model (module × action matrix, AR/DL/SL rules, AMB-01..16). Correction: month reopen is defined in §5.6 (Manager or Admin); gate, register, data model fixed.
+- 2026-10-07 v0.5 — WORKFLOWS v1.0 final specification (14 workflows, notifications catalogue, dependency map). Fixes: DATA-MODEL capar_cases gains qa_endorsed_on; ISS-P1-01 restated (send date vs separate QA endorsement date).
+- 2026-10-08 v0.6 — CONFIGURATION v1.0 final blueprint: 51 CONFIGURABLE settings with 12 attributes each, 31 fixed rules, 11 system items, 15 DECISION settings, 39 open decisions (CD-01..39), effective-dating register. New ids CFG-010.1–.5, 038, 105, 106. DATA-MODEL §15 rule-stamp amendments and PROP-006 added (proposal).
+- 2026-10-08 v0.7 — ARCHITECTURE v1.0 (18 areas, 15 decisions AD-01..15, conformance checks ARC-01..12, spikes S-01..S-08, open items AO-01..08) and API-CONTRACT v1.0 (envelope, 16 error codes, common patterns, ~190-method catalogue, contract tests API-001..020). Decision ids in the new docs use Dnnn form.
+- 2026-10-08 v0.8 — ROADMAP v1.0 (18 dependency-ordered phases PH-0..PH-17, ~150 vertical slices with types/dependencies/blockers/tests, schema-freeze gates SG-1..10, decision calendar, release trains REL-1..8, first task TDMS-0-001). Phase labels in DECISION-GATE, MODULE-MAP, DATA-MODEL, ARCHITECTURE updated. TEST-STRATEGY gains DATA, JOB, TEST-CFG families.
