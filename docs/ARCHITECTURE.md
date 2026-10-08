@@ -585,6 +585,8 @@ Minimum approved is one non-live environment (D047); two are recommended because
 
 Each environment has its own Apps Script project (script ID), web-app deployment URL, database spreadsheet, archive spreadsheets, backup folder, files folder and Script Properties (`ENV`, `DB_ID`, `ARCHIVE_IDS`, `DRIVE_ROOT_ID`, `BACKUP_ROOT_ID`, mail sender, AI key if any). All IDs and secrets live in Script Properties only (ARC-04, CFG-101, R12).
 
+Drive layout (D070): one mother folder `TDMS` holds one subfolder per environment (`TDMS-dev`, `TDMS-test`, `TDMS-live`) and `_apps-script`; `DRIVE_ROOT_ID` is the environment subfolder, never the mother, and the mother is never shared. See [dev-environment runbook](runbooks/dev-environment.md).
+
 ### 16.3 Environment guard
 
 On every cold start the platform compares `ENV` (Script Properties) with the marker stored in the spreadsheet's `_meta`. A mismatch disables all writes and returns `SERVER` with a guard code. Code pointing at the wrong spreadsheet cannot write live data. The demo-date override and any seed/reset tools exist only when `ENV` ≠ `live`.

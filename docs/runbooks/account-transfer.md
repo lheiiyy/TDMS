@@ -11,7 +11,7 @@ Status: **draft. No step has been rehearsed.** Decision: D069 (one personal Gmai
 | Apps Script project (one per environment) | Owned by the account that created it; has a script ID | [VERIFY] whether ownership can be transferred | Recreate the project under the new account (new script ID), push the same commit |
 | Script Properties (`ENV`, `DB_ID`, `DRIVE_ROOT_ID`; later `ARCHIVE_IDS`, `BACKUP_ROOT_ID`, mail sender, AI key if used) | Stored inside the project | [VERIFY] whether they travel with the project | Enter them again; Leo keeps the values offline, never in the repository |
 | Database spreadsheet | Owned by the account; has an ID | [VERIFY] whether ownership transfer keeps the ID | A copy gets a new ID: change `DB_ID` |
-| Drive folder tree (files, nightly backups) | Owned by the account | [VERIFY] whether folder and file IDs stay the same | The `files` table stores Drive file IDs (ARCHITECTURE §9). Copies get new IDs, so a remap tool would be needed (not built) |
+| Mother folder `TDMS` and its Drive folder tree (D070): `TDMS-dev`, `TDMS-test`, `TDMS-live`, `_apps-script`, files, nightly backups | Owned by the account; `TDMS` is the single unit to transfer | [VERIFY] whether folder and file IDs stay the same | The `files` table stores Drive file IDs (ARCHITECTURE §9). Copies get new IDs, so a remap tool would be needed (not built) |
 | Web app deployment and URL | Runs as the owner (`USER_DEPLOYING`, AD-01) | [VERIFY] whether the deployment and URL survive | Create a new versioned deployment; tell users the new URL |
 | Triggers (the time-driven job worker, AD-07) | Created by and run as one account | [VERIFY] whether they can be moved | Delete and recreate under the new owner |
 | Authorisation of scopes | The owner authorises the script | [VERIFY] what the new owner must do on first run | Open the project and run once as the new owner |
@@ -23,6 +23,8 @@ Status: **draft. No step has been rehearsed.** Decision: D069 (one personal Gmai
 | Account security | 2-step verification and recovery options of the account | No | Turn on 2-step verification on the new account before it owns anything |
 | Claude Drive/Sheets connectors | Connected to one account (gate G-09) | No | Reconnect, limit or leave them off, as Leo decides |
 | GitHub `lheiiyy/TDMS`, CI | Not Google-bound; CI holds no Google credential | Yes | Nothing |
+
+**Where things live (D070).** The mother folder `TDMS` holds `TDMS-dev`, `TDMS-test`, `TDMS-live` (each with its database sheet) and `_apps-script`. Apps Script projects are created at script.google.com and moved by hand into `_apps-script`; whether a project counts as part of the folder when ownership moves is [VERIFY]. Moving a Drive item keeps its ID (confirmed for the folders and sheets on 2026-10-08), so `DRIVE_ROOT_ID` and `DB_ID` are not affected by the layout.
 
 TDMS users and audit columns use employee IDs (D024), not Google accounts, so history does not depend on who owns the files.
 
@@ -37,8 +39,8 @@ TDMS users and audit columns use employee IDs (D024), not Google accounts, so hi
 1. **Announce a maintenance window** and stop writes. Use the maintenance flag in `_meta` once slice 2-006 exists; before that, live has no users, so just stop using it.
 2. **Take a dated backup** of the database and the Drive tree (ARCHITECTURE §17). Write down the date. The live deploy script asks for it as `--backup-date`.
 3. **Record the inventory**: script ID, deployment ID and URL, the list of triggers, the Script Property names and values (kept offline).
-4. **Add the new account as editor** on the Apps Script project, the spreadsheet and the Drive folder.
-5. **Transfer ownership** of the folder tree, the spreadsheet and the project, in that order [VERIFY]. If an item cannot be transferred, stop and use section 4.
+4. **Add the new account as editor** on the Apps Script project, the spreadsheet and the mother folder `TDMS`. This is the only time the mother folder is shared (normally it is never shared, D070): only the new owner account, only for the move. Leo confirms this exception at move time; the alternative is to share and transfer each environment subfolder one by one and recreate `TDMS` under the new account.
+5. **Transfer ownership** of the mother folder `TDMS` (one unit), then the spreadsheets and the Apps Script projects, in that order [VERIFY, including whether ownership of a folder carries the items inside it]. If an item cannot be transferred, stop and use section 4.
 6. **As the new owner**: open the project, authorise it, and check that the Script Properties are present [VERIFY]. Re-enter any that are missing. `ENV` must stay `live`.
 7. **Create a new versioned web app deployment** (execute as the owner; access as AD-01 allows) and note the new URL [VERIFY].
 8. **Recreate the triggers** under the new owner [VERIFY].

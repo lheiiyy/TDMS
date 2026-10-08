@@ -4,11 +4,29 @@ Owner: Leo. Account: `lheii.fcsitraining@gmail.com`. By D069 the same account ow
 
 Rules: never commit a script ID, spreadsheet ID or folder ID. The IDs go into the local, git-ignored `.clasp.dev.json` and into Script Properties only ([ARCHITECTURE §16.2](../ARCHITECTURE.md), ARC-04).
 
+## Drive layout (decision D070)
+
+Everything lives in one mother folder in the Drive root of `lheii.fcsitraining@gmail.com`:
+
+```
+TDMS/
+  TDMS-dev/     contains TDMS-dev-DB
+  TDMS-test/    contains TDMS-test-DB
+  TDMS-live/    contains TDMS-live-DB
+  _apps-script/ reserved for the Apps Script projects
+```
+
+- **Never share the mother folder `TDMS`.** Share only an environment subfolder (for example `TDMS-dev`). Sharing the mother folder would also expose `TDMS-live`.
+- `DRIVE_ROOT_ID` is the environment subfolder (`TDMS-dev`, `TDMS-test` or `TDMS-live`), never `TDMS`. The app never needs the mother folder.
+- Moving an item in Drive keeps its ID. On 2026-10-08 the three folders and three sheets were moved into `TDMS` and every ID was unchanged, so `DRIVE_ROOT_ID` and `DB_ID` did not change.
+- **Apps Script projects.** A new project is created at script.google.com and may first appear in the Drive root (My Drive). Move each project by hand into `TDMS/_apps-script`: in Drive, open the menu of the project and choose Move to, then `TDMS` and `_apps-script`. Moving a project is expected to keep its script ID; after the first move, check that the project still opens and that `.clasp.<env>.json` still works. The folder is left empty on purpose.
+- The sharing of every item is unchanged: nothing is shared.
+
 ## Already created for you (names only)
 
 | What | Name | Used as |
 | --- | --- | --- |
-| Drive folder | `TDMS-dev` | Script Property `DRIVE_ROOT_ID` |
+| Drive folder (inside the mother folder `TDMS`) | `TDMS-dev` | Script Property `DRIVE_ROOT_ID` |
 | Google Sheet, inside that folder | `TDMS-dev-DB` | Script Property `DB_ID` |
 | Tab in that sheet | `_meta` | A1 `key`, B1 `value`, A2 `environment`, B2 `dev` |
 
@@ -86,7 +104,7 @@ Same account and rules as dev (interim G-01: dev and test only). Nothing here to
 
 | What | Name | Used as |
 | --- | --- | --- |
-| Drive folder | `TDMS-test` | Script Property `DRIVE_ROOT_ID` |
+| Drive folder (inside the mother folder `TDMS`) | `TDMS-test` | Script Property `DRIVE_ROOT_ID` |
 | Google Sheet, inside that folder | `TDMS-test-DB` | Script Property `DB_ID` |
 | Tab in that sheet | `_meta` | A1 `key`, B1 `value`, A2 `environment`, B2 `test` |
 
@@ -124,7 +142,7 @@ Same account (D069). This creates an **empty shell only**: no data, no users, no
 
 | What | Name | Used as |
 | --- | --- | --- |
-| Drive folder | `TDMS-live` | Script Property `DRIVE_ROOT_ID` |
+| Drive folder (inside the mother folder `TDMS`) | `TDMS-live` | Script Property `DRIVE_ROOT_ID` |
 | Google Sheet, inside that folder | `TDMS-live-DB` | Script Property `DB_ID` |
 | Tab in that sheet | `_meta` | A1 `key`, B1 `value`, A2 `environment`, B2 `live` |
 
