@@ -2,6 +2,8 @@
 
 Status: FINAL specification for review. Replaces v0.1. Logical design only. No application code, no sheet layout.
 Authority: Handover §2, §7.4–§7.11, §8, D012, D020, D021, D023, D024, D027, D041, D047, D049 > Plan Audit §B > other approved docs > prototype (UX evidence only).
+
+> **Amendment D069 (2026-10-08).** Decision D069 supersedes D012: one personal Gmail (`lheii.fcsitraining@gmail.com`, interim) owns the scripts, sheets and Drive for dev, test and live, and ownership must stay transferable ([account-transfer runbook](runbooks/account-transfer.md); Google ownership behaviour is verified in spike S-09). Wherever this document says "company account" or "company-owned" (the Files row in §0.1, §7 reset mail and quotas, §9 storage, the §20 gate paragraph), read it as "the owner account of D069". The live row of §16.1, AO-02 and S-06 are rewritten below. A personal account has no domain, so the "within the company domain" fallback of AD-01 exists only if the project later moves to a Workspace account.
 Companions: [API-CONTRACT](API-CONTRACT.md) · [DATA-MODEL](DATA-MODEL.md) · [PERMISSIONS](PERMISSIONS.md) · [WORKFLOWS](WORKFLOWS.md) · [CONFIGURATION](CONFIGURATION.md) · [DECISION-GATE](DECISION-GATE.md).
 
 **Marks.** *Approved* = stated in an approved source (cited). **Proposed** = engineering design made by this document inside the approved platform; it changes no business rule and needs the owner's sign-off through the packet that implements it. **Spike** = an assumption about the Apps Script platform that must be proven in Phase 0 before it is relied on (Appendix A). **Verify** = a Google quota or limit quoted from general knowledge; confirm on Google's current quota page before relying on the number.
@@ -575,7 +577,7 @@ All failures return `{ok:false, error:{code, message, fields?, rule_id?, retry_a
 | --- | --- | --- | --- | --- | --- |
 | **dev** | Daily development | own project | own | own | Synthetic only |
 | **test** | Acceptance and regression before release (Handover §12) | own project | own | own | Synthetic or masked; reset on demand |
-| **live** | Production | own project, company-owned | own | own | Real |
+| **live** | Production | own project, owned by the D069 account (interim personal Gmail; was company-owned, D012) | own | own | Real |
 
 Minimum approved is one non-live environment (D047); two are recommended because acceptance needs a stable data set while development churns (**Proposed**).
 
@@ -684,7 +686,7 @@ History written without a rule stamp cannot gain one afterwards. That is why CON
 | ID | Item | Blocks | Recommended (not approved) |
 | --- | --- | --- | --- |
 | AO-01 | Confirm repository layout and deploy flow (gate G-04) | TDMS-0-001 | Approve §0.3 and §16.4 |
-| AO-02 | Company Google account and its type (gate G-01): decides quotas and the "Anyone" policy | AD-01, AD-12, §7 | Dedicated company account with a named co-owner |
+| AO-02 | Google account that owns the scripts, sheets and Drive, and its type (gate G-01, answered by D069: personal Gmail, all environments, interim): decides quotas and the "Anyone" policy | AD-01, AD-12, §7 | Keep the personal Gmail with a documented transfer path and a named backup editor (G-08, open); company account only if Leo records a new decision |
 | AO-03 | Time zone (gate G-03) | Clock adapter, manifest | Leo names the zone |
 | AO-04 | Meaning of "Google Sheets" report output (AD-15) | Report slice | Downloadable .xlsx; no sharing |
 | AO-05 | Backup of files (§9, §17) | Hardening | No hard deletes + `sha256` verification + Drive versions |
@@ -705,7 +707,7 @@ Each is a small, throwaway test run in the **dev** environment inside packet TDM
 | S-03 | Maximum practical upload size over `google.script.run`; PDF rendering time for photo-heavy CAPAR reports and a batch of memos | Lower size limit / chunked upload; smaller PDF batches |
 | S-04 | Read time for 4,000-row and 20,000-row tables (whole-table read, ID lookup); `api.batch` size | Move the slow lists to summary tables; reduce batch size |
 | S-05 | Do browsers keep storage inside the iframe (iOS Safari, Android Chrome)? | Offline drafts degrade to a warning (§1.5) |
-| S-06 | Does the chosen company account allow **Execute as owner / Access: Anyone**? What are its mail, trigger and concurrency quotas? | Fallback to "Anyone within the company domain" (AD-01); size the digest and job rates to the quotas |
+| S-06 | Does the D069 account (personal Gmail) allow **Execute as owner / Access: Anyone**? What are its mail, trigger and concurrency quotas (a personal account may have lower limits than Workspace; to verify)? | Fallback to "Anyone within the company domain" (AD-01) exists only on a Workspace account; size the digest and job rates to the quotas |
 | S-07 | Lock contention: N concurrent writers (e.g. 20) each holding a realistic critical section | Shorten the section; raise the `BUSY` wait; queue the heaviest writes |
 | S-08 | Environment guard and `clasp` multi-project push work as designed | Adjust the deploy tool; the guard itself is required |
 

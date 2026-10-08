@@ -9,7 +9,7 @@ v1 · on hold (visit "Next action", D019) · v2 (Store Head/Area Manager account
 | ID | Requirement | Source |
 | --- | --- | --- |
 | REQ-001 | UI → `api.js` → modular services → business rules → repository → storage; only the repository touches storage | §2, Instruction §11 |
-| REQ-002 | Google Sheets database and private Google Drive, owned by a company account | D012, §2 |
+| REQ-002 | Google Sheets database and private Google Drive, owned by the project's Google account (D069 supersedes D012: interim personal Gmail) | D069, §2 |
 | REQ-003 | Separate dev/test spreadsheet and Drive; dev never writes live data | D047, §2 |
 | REQ-004 | Databases built from scratch, one tab per table, designed for fast loading | D047 |
 | REQ-005 | 50-row paging; dashboards read pre-computed summaries with an "updated at" time; heavy rebuilds run queued after a save | §2, §8 |

@@ -108,7 +108,7 @@ PH-0 ─ PH-1 ─ PH-2 ─ PH-3 ─ PH-4 ─ PH-5 ─ PH-6 ─ PH-7 ─ PH-8
 | Needed before | Item | Decision |
 | --- | --- | --- |
 | **0-001** | **G-04** | Approve or amend the repository layout and deploy flow (ARCHITECTURE §0.3, §16.4) |
-| **0-002** | **G-01** | Name the company Google account (type, ownership, co-owner) |
+| **0-002** | **G-01** | Google account that owns the scripts, sheets and Drive. Answered 2026-10-08: personal Gmail for all environments (D069). Backup editor open (G-08) |
 | **0-002**, 1-001 | **G-03** | Organisation time zone |
 | 0-005 | AO-02 / S-06 | Confirm the account may run a web app as owner with "Anyone" access |
 | 2-001 | **G-05** | Approve DATA-MODEL and the history design (PROP-004) |
@@ -162,15 +162,15 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | --- | --- |
 | **Phase ID** | PH-0 |
 | **Objective** | A working repository, three isolated environments, a test runner and proof of the platform assumptions, before any application code exists |
-| **Prerequisites** | G-04 (layout); G-01 (account) and G-03 (time zone) for the Apps Script and spreadsheet slices. Handover §11 lists G-01/G-02 as "needed before Phase 0 starts"; see §9 for what can safely start earlier |
+| **Prerequisites** | G-04 (layout); G-01 (account; answered, D069) and G-03 (time zone) for the Apps Script and spreadsheet slices. Handover §11 lists G-01/G-02 as "needed before Phase 0 starts"; see §9 for what can safely start earlier |
 | **Modules** | Platform only (no business module) |
 | **Database work** | Create the dev, test and live spreadsheets as empty shells with the `_meta` environment marker. No tables yet |
 | **Backend work** | None beyond spike code kept in `spikes/` (throwaway). Deploy tooling (`clasp` per environment), Script Properties, environment configuration |
 | **Frontend work** | None (spike pages only) |
 | **Tests** | Node test runner; architecture conformance checks ARC-01–12 as static tests; spike reports |
 | **Documentation** | `CLAUDE.md`; docs set copied into `docs/`; `docs/spikes/S-0n.md` reports; ARCHITECTURE updated with spike results; PROJECT-STATE |
-| **Acceptance criteria** | `npm test` passes with the ARC checks active and proven to fail on a planted violation; dev, test and live each have their own Apps Script project, spreadsheet, Drive folder and Script Properties; a deliberately mismatched environment refuses to start; all eight spikes have a written result; any spike that failed has its fallback recorded in ARCHITECTURE |
-| **Risks** | The company account cannot run "Execute as owner / Anyone" (AD-01) → fallback is domain-only access; spike results contradict an assumption (cache limit, payload size) → change one mechanism, not the platform; live shell created under a personal account → ownership cannot be moved cheaply (G-01) |
+| **Acceptance criteria** | `npm test` passes with the ARC checks active and proven to fail on a planted violation; dev, test and live each have their own Apps Script project, spreadsheet, Drive folder and Script Properties; a deliberately mismatched environment refuses to start; all nine spikes (S-01 to S-09) have a written result; any spike that failed has its fallback recorded in ARCHITECTURE |
+| **Risks** | The owner account cannot run "Execute as owner / Anyone" (AD-01) → fallback is domain-only access (Workspace accounts only); spike results contradict an assumption (cache limit, payload size) → change one mechanism, not the platform; live shell under a personal account (D069) → ownership transfer is unverified until spike S-09 (0-011) |
 | **Definition of done** | The slice DoD (§1.2), plus: three environments exist and are documented; no secret or ID is committed; PROJECT-STATE names the account owner and the environment table |
 
 | ID | Type | Task | Depends | Blocked by | Tests | Size |
@@ -178,13 +178,14 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | 0-001 | T | Initialise `lheiiyy/TDMS`: folder layout, `CLAUDE.md`, docs copy, `.gitignore`, `package.json` with a dependency-free Node test runner, ARC static checks (ARC-01–04, 07, 08, 10 active; 05, 06, 09, 11, 12 scaffolded as pending), minimal CI workflow. **First Claude Code task, §9** | — | G-04 | ARC-01–12, PLAT | M |
 | 0-002 | T | Create the **dev** environment: Apps Script project (V8, manifest with time zone), database spreadsheet with `_meta`, Drive folders, Script Properties, `clasp` config template, deploy script, environment guard test | 0-001 | G-01, G-03 | PLAT | M |
 | 0-003 | T | Create the **test** environment and the promotion tool (same commit pushed dev → test); repeat the guard test; document reset-to-seed procedure | 0-002 | G-01 | PLAT | S |
-| 0-004 | T | Create the **live shell**: company-owned project, empty spreadsheet with marker, folders, 2-step verification and co-owner checklist, no data and no users | 0-003 | G-01 | PLAT | S |
+| 0-004 | T | Create the **live shell**: project owned by the interim personal account (D069), empty spreadsheet with marker, folder, 2-step verification on the account and a named backup editor (G-08, open until the first real import), no data and no users, no web app deployment | 0-003 | — | PLAT | S |
 | 0-005 | T | Run **spike S-06 + S-08**: deploy a hello web app as owner with "Anyone" access, echo a `system.ping` envelope, record mail/trigger/concurrency quotas, prove multi-project `clasp` push and the environment guard | 0-003 | AO-02 | spike report | S |
 | 0-006 | T | Run **spike S-01 + S-05**: lazy-load a module view and script in the sandbox; test device storage persistence on iOS Safari and Android Chrome | 0-005 | — | spike report | S |
 | 0-007 | T | Run **spike S-02**: benchmark iterated HMAC-SHA256 to choose the iteration count and record the sign-in time | 0-003 | — | spike report | S |
 | 0-008 | T | Run **spike S-04 + S-07**: read time for 4,000 and 20,000 rows, `api.batch` size, and 20 concurrent writers against the script lock | 0-003 | — | spike report | S |
 | 0-009 | T | Run **spike S-03**: maximum upload size over `google.script.run`, PDF render time with photos and a memo batch | 0-003 | — | spike report | S |
-| 0-010 | T | Close PH-0: write all spike results into ARCHITECTURE (changes limited to the mechanism named), update the risk table, PROJECT-STATE, phase exit review | 0-004 to 0-009 | — | — | S |
+| 0-011 | T | Run **spike S-09 (account-transfer rehearsal)**: on the *test* environment, move ownership of the project, spreadsheet and Drive folder to a second Gmail and record what holds (file IDs, Script Properties, web app deployment URL, triggers, clasp login, mail sender). Needs a second Gmail from Leo and the "TDMS test" Apps Script project to exist. Verifies [account-transfer](runbooks/account-transfer.md) | 0-003 | D069 | spike report | S |
+| 0-010 | T | Close PH-0: write all spike results into ARCHITECTURE (changes limited to the mechanism named), update the risk table, PROJECT-STATE, phase exit review | 0-004 to 0-009, 0-011 | — | — | S |
 
 ---
 
@@ -290,7 +291,7 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | **Tests** | AUTH, API-002, 003, 005, 018; acceptance §12 checks for sign-in |
 | **Documentation** | API-CONTRACT §5 confirmed; ARCHITECTURE §7 updated with the chosen iteration count; PROJECT-STATE |
 | **Acceptance criteria** | A new user must change the temporary password before any other screen opens; five wrong passwords pause that ID for 15 minutes and the response never says whether the ID exists; a session idle for 30 minutes is refused; a deactivated user's token is refused at once; a reset link works once and expires after 30 minutes; no password or token appears in any log |
-| **Risks** | Hashing too slow or too weak (S-02); sessions lost to cache eviction (sheet is the truth); the owner account mail quota (G-01) |
+| **Risks** | Hashing too slow or too weak (S-02); sessions lost to cache eviction (sheet is the truth); the owner account mail quota (personal Gmail, to verify in S-06) |
 | **Definition of done** | Slice DoD; the first-Admin bootstrap is documented and the tool refuses to run on a populated live database |
 
 | ID | Type | Task | Depends | Blocked by | Tests | Size |

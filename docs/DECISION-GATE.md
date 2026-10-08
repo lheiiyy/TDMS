@@ -47,6 +47,7 @@ Checked against: Handover (D1–D68, §3, §9, §10, §11), Plan Audit, and the 
 - Decision: name the account and confirm it is Workspace or standard and that it will own script, sheets and Drive.
 - Recommended: a dedicated shared company account (not a person's), with two named co-owners.
 - If chosen differently: a personal account breaks D12; a person-bound account becomes a continuity risk.
+- **Update 2026-10-08 (Leo):** answered. One personal Gmail owns all three environments; D12 is superseded by D069. The continuity risk is mitigated by a documented transfer path ([account-transfer runbook](runbooks/account-transfer.md)), verified in spike S-09, and by a named backup editor (G-08).
 
 **G-02 · ISS-P1-14 · Nightly backup count**
 - Description: how many nightly backups to keep.
@@ -131,12 +132,30 @@ Checked against: Handover (D1–D68, §3, §9, §10, §11), Plan Audit, and the 
 
 ---
 
+### B5. Added 2026-10-08 (live environment on a personal account, D069)
+
+**G-08 · Backup editor for the live environment**
+- Description: with one personal account owning everything, a second person needs edit access so the project survives loss of the account or of Leo's availability.
+- Source: D069; ARCHITECTURE AD-12, §17.
+- Why: continuity; a lost password or a locked account would otherwise stop the system.
+- Affects: Apps Script project, spreadsheet, Drive folder (all environments), the transfer runbook.
+- Decision: the email address of the backup editor. **Not decided yet. No email is recorded; none is to be invented.**
+- Close by: BEFORE the first real data import (G-07, slice 1F). Not needed for the empty live shell (0-004).
+
+**G-09 · Claude Drive/Sheets connectors and real employee data**
+- Description: the Claude Drive and Sheets connectors act with the full access of the account they are connected to. Real employee data (HR masterlist, G-07) is personal data.
+- Source: D069; Handover §7 privacy rules.
+- Why: if live shares the account the connectors use, the connectors can read it.
+- Decision: BEFORE the first real employee data enters live, Leo disables or limits the Claude Drive and Sheets connectors for the live account, or moves live to an account without connectors.
+- Related rule: no real data in live before slice 2-006 (the environment guard refuses at run time).
+- Close by: before G-07 data enters live.
+
 ## C. BLOCKING (consolidated)
 
 **Before Phase 0 starts:** G-01, G-02, G-03, G-04.
 **Before the first data-layer slice (1A):** G-05.
 **Before authorization (1D):** G-06.
-**Before the import slice (1F):** G-07.
+**Before the import slice (1F):** G-07. **Before the first real data import into live:** G-08, G-09, and slice 2-006 (environment guard run-time refusal).
 **Before the named module:** every row in B4 (Visits/CAPAR: ISS-P0-18, P1-01, P1-06, P1-10, P1-15, P1-19, holiday list; Trainee: P1-02, P1-12, P1-20; TL: P1-03, P1-04; Proficiency: P1-05, P1-08, P1-11; KPI/close: P1-09, P0-16, P1-13).
 
 ## D. NON-BLOCKING (handle during implementation)
@@ -162,7 +181,7 @@ Checked against: Handover (D1–D68, §3, §9, §10, §11), Plan Audit, and the 
 **READY FOR PHASE 0: NO**
 
 Exact blockers:
-1. **G-01** Name the company Google account that owns the script, sheets and Drive (D12, §11).
+1. **G-01** Name the company Google account that owns the script, sheets and Drive (D12, §11). *Answered 2026-10-08: personal Gmail for all environments, D069.*
 2. **G-02** State the nightly backup retention count (§11 gate).
 3. **G-03** Confirm the organisational time zone (gap found in this baseline).
 4. **G-04** Approve or amend the repository layout / environment setup (HANDOFF-MODEL §7).
@@ -181,3 +200,6 @@ Also tick §11 item 1 as resolved: D2/§3/§9 already settle Store Head and Area
 | PROP-005 | **Approved:** Store Health rules take the CAPAR failure list as an input parameter (9-005); real CAPAR data wired in 10-008. | ROADMAP conflict R-06 closed. |
 | PROP-006 / CD-38 | **Approved:** each result stores one bundle-version stamp (DM-A0, DM-A1..A12). | Slice 3-002 unblocked. |
 | G-05 | **Pending.** Leo will read DATA-MODEL himself; not yet approved. | Slice 2-001 stays blocked. |
+| G-01 (live, D069) | **Decided:** the live environment uses the same personal Gmail `lheii.fcsitraining@gmail.com` as dev and test, not a company account. It must be easy to transfer to another email. This supersedes the "live stays blocked until the company account is named" part of the G-01 row above. | 0-004 (live shell) is unblocked. D012 is superseded by D069. Transfer path: [account-transfer runbook](runbooks/account-transfer.md), to verify in spike S-09 (slice 0-011). |
+| G-08 | **Open.** Backup editor email not decided. Do not invent one. | Close BEFORE the first real data import (G-07, slice 1F). |
+| G-09 | **Open.** Before the first real employee data enters live, Leo disables or limits the Claude Drive/Sheets connectors for the live account, or moves live to an account without connectors. No real data in live before slice 2-006. | Close before G-07 data enters live. |
