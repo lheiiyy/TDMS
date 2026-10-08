@@ -86,6 +86,7 @@ Checked against: Handover (D1–D68, §3, §9, §10, §11), Plan Audit, and the 
 - Decision: approve the entity list and the history design, or amend.
 - Recommended: approve; the mechanism consolidates, it adds no business rule.
 - If different: three overlapping history stores, double-write risk, larger cells.
+- **Update 2026-10-08 (Leo):** method decided: **guided review**. The planner gives Leo a short summary per part of DATA-MODEL plus a question checklist, and Leo approves after. **Status: still pending Leo's approval, before slice 2-001. DATA-MODEL is not approved.**
 
 ### B3. Blocks authorization slice (1D)
 
@@ -139,15 +140,18 @@ Checked against: Handover (D1–D68, §3, §9, §10, §11), Plan Audit, and the 
 - Source: D069; ARCHITECTURE AD-12, §17.
 - Why: continuity; a lost password or a locked account would otherwise stop the system.
 - Affects: Apps Script project, spreadsheet, Drive folder (all environments), the transfer runbook.
-- Decision: the email address of the backup editor. **Not decided yet. No email is recorded; none is to be invented.**
-- Close by: BEFORE the first real data import (G-07, slice 1F). Not needed for the empty live shell (0-004).
+- Decision: **answered 2026-10-08 (Leo): the backup editor is `Hrad.tnd@gmail.com`.**
+- Status: **not shared yet.** Sharing is done only when Leo says so, and only the `TDMS-live` folder and the "TDMS live" Apps Script project. Never the mother folder `TDMS` (D070).
+- Note: the address appears to be a department mailbox, not a personal one. Leo should enable 2-step verification on it and limit who holds the password.
+- Close by: the sharing must be set up BEFORE the first real data import (G-07, slice 1F). Not needed for the empty live shell (0-004).
 
 **G-09 · Claude Drive/Sheets connectors and real employee data**
 - Description: the Claude Drive and Sheets connectors act with the full access of the account they are connected to. Real employee data (HR masterlist, G-07) is personal data.
 - Source: D069; Handover §7 privacy rules.
 - Why: if live shares the account the connectors use, the connectors can read it.
-- Decision: BEFORE the first real employee data enters live, Leo disables or limits the Claude Drive and Sheets connectors for the live account, or moves live to an account without connectors.
-- Related rule: no real data in live before slice 2-006 (the environment guard refuses at run time).
+- Decision: **answered 2026-10-08 (Leo): disable the Claude Drive and Sheets connectors for the live account BEFORE the first real employee data (HR masterlist, G-07) enters live.**
+- Status: not done yet. Leo does it before the import.
+- Related rule: still no real data in live before slice 2-006 (the environment guard refuses at run time).
 - Close by: before G-07 data enters live.
 
 ## C. BLOCKING (consolidated)
@@ -155,7 +159,7 @@ Checked against: Handover (D1–D68, §3, §9, §10, §11), Plan Audit, and the 
 **Before Phase 0 starts:** G-01, G-02, G-03, G-04.
 **Before the first data-layer slice (1A):** G-05.
 **Before authorization (1D):** G-06.
-**Before the import slice (1F):** G-07. **Before the first real data import into live:** G-08, G-09, and slice 2-006 (environment guard run-time refusal).
+**Before the import slice (1F):** G-07. **Before the first real data import into live:** G-08 (backup editor sharing set up), G-09 (connectors disabled), and slice 2-006 (environment guard run-time refusal).
 **Before the named module:** every row in B4 (Visits/CAPAR: ISS-P0-18, P1-01, P1-06, P1-10, P1-15, P1-19, holiday list; Trainee: P1-02, P1-12, P1-20; TL: P1-03, P1-04; Proficiency: P1-05, P1-08, P1-11; KPI/close: P1-09, P0-16, P1-13).
 
 ## D. NON-BLOCKING (handle during implementation)
@@ -199,7 +203,7 @@ Also tick §11 item 1 as resolved: D2/§3/§9 already settle Store Head and Area
 | G-02 | Keep **14** nightly backups (CFG-093 = 14; also resolves ISS-P1-14 and CD-22 count; file-backup scope AO-05 stays open). | Slice 6-006 unblocked. |
 | PROP-005 | **Approved:** Store Health rules take the CAPAR failure list as an input parameter (9-005); real CAPAR data wired in 10-008. | ROADMAP conflict R-06 closed. |
 | PROP-006 / CD-38 | **Approved:** each result stores one bundle-version stamp (DM-A0, DM-A1..A12). | Slice 3-002 unblocked. |
-| G-05 | **Pending.** Leo will read DATA-MODEL himself; not yet approved. | Slice 2-001 stays blocked. |
+| G-05 | **Pending, method decided (2026-10-08): guided review.** The planner gives Leo a short summary per part of DATA-MODEL plus a question checklist; Leo approves after. DATA-MODEL is **not** approved. | Slice 2-001 stays blocked until Leo approves. |
 | G-01 (live, D069) | **Decided:** the live environment uses the same personal Gmail `lheii.fcsitraining@gmail.com` as dev and test, not a company account. It must be easy to transfer to another email. This supersedes the "live stays blocked until the company account is named" part of the G-01 row above. | 0-004 (live shell) is unblocked. D012 is superseded by D069. Transfer path: [account-transfer runbook](runbooks/account-transfer.md), to verify in spike S-09 (slice 0-011). |
-| G-08 | **Open.** Backup editor email not decided. Do not invent one. | Close BEFORE the first real data import (G-07, slice 1F). |
-| G-09 | **Open.** Before the first real employee data enters live, Leo disables or limits the Claude Drive/Sheets connectors for the live account, or moves live to an account without connectors. No real data in live before slice 2-006. | Close before G-07 data enters live. |
+| G-08 | **Answered (2026-10-08):** backup editor = `Hrad.tnd@gmail.com`. Not shared yet. Sharing only when Leo says, and only the `TDMS-live` folder and the "TDMS live" Apps Script project, never the mother folder `TDMS` (D070). The address appears to be a department mailbox: Leo enables 2-step verification and limits who holds the password. | Sharing must be set up BEFORE the first real data import (G-07, slice 1F). |
+| G-09 | **Answered (2026-10-08):** disable the Claude Drive/Sheets connectors for the live account before the first real employee data (HR masterlist, G-07) enters live. Not done yet. Still no real data in live before slice 2-006. | Do it before G-07 data enters live. |

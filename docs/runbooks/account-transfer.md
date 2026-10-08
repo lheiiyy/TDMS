@@ -17,11 +17,11 @@ Status: **draft. No step has been rehearsed.** Decision: D069 (one personal Gmai
 | Authorisation of scopes | The owner authorises the script | [VERIFY] what the new owner must do on first run | Open the project and run once as the new owner |
 | Mail sender (CFG-007) | The address that sends reset links and notices | [VERIFY] whether the new account may send as the configured address and its daily mail limit | Change CFG-007 to the new account |
 | Quotas (mail, triggers, run time, concurrency) | Per account type | [VERIFY] limits of the new account (personal and Workspace may differ) | Re-size digest and job rates |
-| Editors (backup editor, G-08) | Sharing lists on project, sheet, folder | Not carried over by default [VERIFY] | Share again with the same people |
+| Editors (backup editor, G-08: `Hrad.tnd@gmail.com`, answered 2026-10-08, not shared yet) | Sharing lists on the `TDMS-live` folder and the "TDMS live" project (never the mother folder, D070) | Not carried over by default [VERIFY] | Share again with the same people |
 | `clasp` login | `.clasprc.json` on each computer, per account | No | `clasp logout`, `clasp login` as the new account, delete the old file |
 | `.clasp.<env>.json` | Holds the script ID, local and git-ignored | Only if the script ID is unchanged | Edit `scriptId` |
 | Account security | 2-step verification and recovery options of the account | No | Turn on 2-step verification on the new account before it owns anything |
-| Claude Drive/Sheets connectors | Connected to one account (gate G-09) | No | Reconnect, limit or leave them off, as Leo decides |
+| Claude Drive/Sheets connectors | Connected to one account (gate G-09: to be disabled for the live account before real employee data, answered 2026-10-08) | No | Keep them off for live; reconnect only as Leo decides |
 | GitHub `lheiiyy/TDMS`, CI | Not Google-bound; CI holds no Google credential | Yes | Nothing |
 
 **Where things live (D070).** The mother folder `TDMS` holds `TDMS-dev`, `TDMS-test`, `TDMS-live` (each with its database sheet) and `_apps-script`. Apps Script projects are created at script.google.com and moved by hand into `_apps-script`; whether a project counts as part of the folder when ownership moves is [VERIFY]. Moving a Drive item keeps its ID (confirmed for the folders and sheets on 2026-10-08), so `DRIVE_ROOT_ID` and `DB_ID` are not affected by the layout.
@@ -30,7 +30,7 @@ TDMS users and audit columns use employee IDs (D024), not Google accounts, so hi
 
 ## 2. Before a move
 
-1. Name the backup editor (G-08) and keep that person on all three items. This is the safest second hand-holder, and the natural first recipient.
+1. The backup editor is `Hrad.tnd@gmail.com` (G-08, answered 2026-10-08). Once Leo has shared the `TDMS-live` folder and the "TDMS live" project with it, keep it on them. It appears to be a department mailbox: keep 2-step verification on and limit who holds the password. It is the safest second hand-holder, and the natural first recipient.
 2. Have the new account ready: 2-step verification on, recovery email and phone set.
 3. Make sure S-09 has been run and its results recorded in this file. If not, rehearse on **test** first, never on live.
 
