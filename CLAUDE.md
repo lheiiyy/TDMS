@@ -11,6 +11,8 @@ Map: STATUS = `docs/PROJECT-STATE.md` · PLAN = `docs/ROADMAP.md` · adr = `docs
 - Leo is learning Git: create the branch, commit and open the PR for him, and explain in one line what changed. Never push to `main`.
 - Never write to a live legacy sheet (SVMI, TL Monitoring, CAPAR, PMS). Import from copies.
 - Never commit credentials, tokens, `.clasp.json`, or spreadsheet/Drive/script IDs.
+- Deploy to live only when Leo says so, after a dated live backup (`node tools/deploy.js live --live --backup-date yyyy-mm-dd`; the date is a reminder, not proof of a backup).
+- No real employee data in `live` before slice 2-006 and gate G-09 (DECISION-GATE).
 
 ## Read order
 

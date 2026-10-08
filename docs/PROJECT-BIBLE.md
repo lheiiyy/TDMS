@@ -21,7 +21,7 @@ Seven roles: Training Officer, Training Supervisor, Training Manager, Senior Tra
 3. Stable server-generated IDs; names are display only; never relationship keys.
 4. History is never silently rewritten: effective dates, versions, snapshots; controlled deactivation over deletion.
 5. Configurable ≠ everything editable: configurable, fixed workflow, system/technical, requires-decision are kept apart ([CONFIGURATION](CONFIGURATION.md)).
-6. Separate dev/test and live data; company-owned account; GitHub is the source of truth.
+6. Separate dev/test and live data; one Google account owns the scripts, sheets and Drive (D069: interim personal Gmail, transferable per the account-transfer runbook); GitHub is the source of truth.
 7. Migration-ready for a future PostgreSQL schema in the same repository.
 Detail: [ARCHITECTURE](ARCHITECTURE.md).
 

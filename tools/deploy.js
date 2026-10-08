@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 // Owner-run deploy: pushes src/ to the Apps Script project of one environment with clasp.
-// Usage: node tools/deploy.js <dev|test|live> [--live] [--dry-run]
+// Usage: node tools/deploy.js <dev|test> [--dry-run]
+//        node tools/deploy.js live --live --backup-date yyyy-mm-dd [--dry-run]
 // Reads the local, git-ignored .clasp.<env>.json (never committed; it carries the script ID).
 // No dependencies. See tools/README.md.
 const path = require('node:path');
@@ -16,13 +17,15 @@ function realDeps() {
     log: function (m) { console.log(m); },
     error: function (m) { console.error(m); },
     root: ROOT,
+    // Today in Asia/Manila as yyyy-mm-dd (the project time zone, gate G-03).
+    today: function () { return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }); },
   };
 }
 
 // Returns the process exit code. 1 = refused; otherwise clasp's own status.
 function main(argv, deps) {
   deps = deps || realDeps();
-  const parsed = lib.parseArgs(argv);
+  const parsed = lib.parseArgs(argv, deps.today());
   if (!parsed.ok) return refuse(deps, parsed.error);
 
   const file = lib.configFileName(parsed.env);
@@ -44,6 +47,7 @@ function main(argv, deps) {
 
   const args = lib.claspPushArgs(file);
   deps.log('Environment: ' + parsed.env + (parsed.live ? ' (LIVE, explicit)' : ''));
+  if (parsed.live) deps.log('Backup date: ' + parsed.backupDate + ' (a reminder only; this script cannot verify that a backup exists).');
   deps.log('Command: clasp ' + args.join(' '));
   if (parsed.dryRun) {
     deps.log('Dry run: nothing was pushed.');

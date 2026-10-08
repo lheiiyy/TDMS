@@ -126,7 +126,7 @@ Columns: ID · Setting (name — description) · Type · Validation / allowed va
 | CFG-002 | **Wrong passwords before pause** — failed sign-ins before the account is paused | int | S | 5 | I | A | A1 | N4 | H1 |
 | CFG-003 | **Pause length** — minutes the account stays paused after CFG-002 | int | S | 15 min | I | A | A1 | N4 | H1 |
 | CFG-004 | **Officer edit window** — hours an officer may edit own records after creating them | int | S; P range 1–168 | 24 h | I | A | A2 | N3 — evaluated at the edit attempt using the version in force then (CD-36) | H1 |
-| CFG-007 | **Email sender address** — account that sends reset links, QA PDFs and notices | email | valid email; must be a company account (D012) | **REQUIRES DECISION** (CD-01) | I | A | A2 | N0 (future sends only) | H1 |
+| CFG-007 | **Email sender address** — account that sends reset links, QA PDFs and notices | email | valid email; must be the account that owns the script (interim: personal Gmail `lheii.fcsitraining@gmail.com`, D069) | **REQUIRES DECISION** (CD-01) | I | A | A2 | N0 (future sends only) | H1 |
 | CFG-008 | **Permission matrix** — which role may do which action, with scope | matrix | one entry per PERM-nnn × role; scope in {own, assigned brand, assigned store, all, delegated}; the last active Admin cannot lose Admin rights | seeded from PERMISSIONS §8 | E | **REQUIRES DECISION** (CD-02; proposed A) | A2 | N4 | H1 (ENT-026 VER) |
 | CFG-009 | **EXECom officer flag (FLAG-001)** — per TDD user; gives EXECom report access | bool per user | at least one active holder; not delegable | ≥ 1 holder | I | A | A2 | N4 | field history |
 
@@ -264,7 +264,7 @@ These are not business settings. They change only by a release, with a decision 
 | --- | --- | --- | --- |
 | SY-001 | AI API key (CFG-064) | Script Properties only; never in a sheet | §7.11 |
 | SY-002 | ID prefixes and formats, audit columns, `row_version`, date/timestamp formats, EXECom report column set (CFG-100) | Code constants | §7.10, Audit §E |
-| SY-003 | Spreadsheet and Drive folder IDs per environment, API key, owner account (CFG-101) | Script Properties; dev and live separated | §2, D047, D012 |
+| SY-003 | Spreadsheet and Drive folder IDs per environment, API key, owner account (CFG-101) | Script Properties; dev and live separated | §2, D047, D012 (superseded by D069) |
 | SY-004 | Page size 50, cache lifetimes, trigger schedules, lock timeouts (CFG-102) | Technical | §2, §8 |
 | SY-005 | Session storage design | Hashed token; storage per Auth packet (ISS-P0-03) | DATA-MODEL ENT-030 |
 | SY-006 | Cell limit 50,000 characters; snapshots stored as rows | Sheets limit | DATA-MODEL P10 |
@@ -284,7 +284,7 @@ Everything here is open. "Recommended" is a suggestion only; none is approved. N
 
 | ID | Setting | What is needed | Source | Blocks | Recommended (not approved) |
 | --- | --- | --- | --- | --- | --- |
-| CD-01 | CFG-007 | Company email account used to send | D012, ISS-P0-04 | Auth, CAPAR | Leo supplies the account |
+| CD-01 | CFG-007 | Account used to send. Interim answer 2026-10-08 (D069): the script-owning personal Gmail `lheii.fcsitraining@gmail.com`; confirm the final sender before real use | D069, ISS-P0-04 | Auth, CAPAR | Leo confirms the final sender |
 | CD-02 | CFG-008 | Who edits the permission matrix; whether Admin sits above Senior | ISS-P0-06, AMB-01 | Authorization | Admin edits, audited, last-admin guard |
 | CD-03 | CFG-011 | May the location type set grow? Only "Store" has behaviour | ISS-P2-01 | Master data | Keep five types fixed |
 | CD-04 | CFG-013 | The merged audit/failure type list values | D010 | CAPAR | Leo supplies the list |

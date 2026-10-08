@@ -10,15 +10,19 @@ Owner-run scripts: clasp, deploy, schema check, seed.
 ## deploy.js
 
 ```
-node tools/deploy.js <dev|test|live> [--live] [--dry-run]
+node tools/deploy.js <dev|test> [--dry-run]
+node tools/deploy.js live --live --backup-date yyyy-mm-dd [--dry-run]
 ```
 
 Pushes `src/` with `clasp push --project .clasp.<env>.json`. No dependencies; needs `clasp` installed. It refuses (exit 1, nothing pushed) when:
 
 - the environment is missing or not `dev`, `test` or `live`;
 - `live` is requested without `--live`, or `--live` is used with another environment;
+- `live` is requested without `--backup-date`, or the date is not a real `yyyy-mm-dd`, is in the future, or is more than 1 day before today (Asia/Manila). `--backup-date` is refused for `dev` and `test`;
 - `.clasp.<env>.json` is missing, is not valid JSON, still has the template `scriptId`, or has a `rootDir` other than `src`;
 - `src/appsscript.json` is missing.
+
+**The backup date is a reminder, not proof.** The script cannot check that a backup exists. Take the dated live backup first, and deploy to live only when Leo says so (CLAUDE.md).
 
 `--dry-run` prints the command and pushes nothing. Setup steps: [docs/runbooks/dev-environment.md](../docs/runbooks/dev-environment.md).
 

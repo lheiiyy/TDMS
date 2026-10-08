@@ -17,7 +17,7 @@ Not approved items (draft proposals, open questions) are **not** here: see [ISSU
 | D009 | One monthly visit target per officer; annual computed | |
 | D010 | One shared audit/failure type list | |
 | D011 | Officers see their own KPI scorecard, read only | |
-| D012 | Company Google account owns database and script | Account not yet named |
+| D012 | Company Google account owns database and script | Superseded by D069 (2026-10-08) |
 | D013 | Reports: PDF, Google Sheets, print | |
 | D014 | No AI in LMS; non-AI help instead | |
 | D015 | Delegation in v1 | |
@@ -72,12 +72,14 @@ Not approved items (draft proposals, open questions) are **not** here: see [ISSU
 | D066 | CAPAR photos | Limits still to be supplied |
 | D067 | TL actions performed by the officer, no approval step | |
 | D068 | TL quit handled separately | |
+| D069 | One Google account owns the scripts, sheets and Drive for all environments: the personal Gmail `lheii.fcsitraining@gmail.com` (interim). Ownership must stay easy to transfer to another email | Supersedes D012 (company account). Decider: Leo, 2026-10-08. Transfer path: [account-transfer runbook](runbooks/account-transfer.md); every Google ownership claim there is to verify in spike S-09 (slice 0-011). Conditions: G-08 (backup editor) and G-09 (connectors) before the first real data |
+| D070 | Drive layout: one mother folder `TDMS` in the Drive root of the D069 account, holding `TDMS-dev`, `TDMS-test`, `TDMS-live` (each with its own database sheet `TDMS-<env>-DB`) and `_apps-script` (reserved for the Apps Script projects, moved there by hand). `DRIVE_ROOT_ID` is an environment subfolder, never the mother. The mother folder is never shared; only an environment subfolder is shared | Extends D069. Decider: Leo, 2026-10-08. Moving the folders kept every ID. See [dev-environment runbook](runbooks/dev-environment.md) and [account-transfer](runbooks/account-transfer.md) |
 
 ## Not in force (not approved; kept out of the record)
 D019 visit "Next action" (on hold) · D051 training memo (proposed) · Audit W14 Admin loses approval rights · "Other activity" log · single employee profile hub.
 
 ## Rules for this file
-New decisions continue from D069. Record the date, the decider and the superseded ID. A decision is reopened only by explicit request, a documented contradiction, a technical blocker, or a later decision; the reason is recorded first.
+New decisions continue from D071. Record the date, the decider and the superseded ID. A decision is reopened only by explicit request, a documented contradiction, a technical blocker, or a later decision; the reason is recorded first.
 
 ## Older sources superseded by approved decisions (traceability)
 Several purposes per visit → D017 · Plan §6 risk formula → D029 · 5 roles → Handover §3 (7 roles) · Employee ID `EMP-000000` → D024, D049 · Roles-spec "certify = approve" → D067 · Roles-spec promotion Manager/Senior → D031 · Trainee page 14-day/4 equal parts/pass 85 → D043, D052, D054, D055 · repo `TddProjectai/TDMS_Project` and SVMI schema base → D041 · calendar-only planning (D018) → D061.
