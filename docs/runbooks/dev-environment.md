@@ -75,5 +75,43 @@ To check by hand for now: `ENV` in Script Properties must equal the `environment
 
 - **Web app access.** The manifest uses `executeAs: USER_DEPLOYING` and `access: ANYONE_ANONYMOUS` (ARCHITECTURE AD-01), because users sign in with Employee ID and not a Google identity. The fallback `DOMAIN` exists only on a Google Workspace account; a personal Gmail account cannot use it. Spike S-06 (slice 0-005) decides.
 - **OAuth scopes.** `oauthScopes` is empty on purpose: 0-002 uses no Google service. Each later slice adds only the scope its adapter needs.
-- **Test and live.** `test` repeats these steps in slice 0-003 with `.clasp.test.json` and `ENV` = `test`. `live` waits for slice 0-004 and the company account.
+- **Test and live.** `test` is described below (slice 0-003). `live` waits for slice 0-004 and the company account.
 - **Reset.** To start over, delete the Apps Script project, remove `.clasp.dev.json`, and repeat step 2. The Drive folder and sheet can stay.
+
+## Test environment (TDMS-0-003)
+
+Same account and rules as dev (interim G-01: dev and test only). Nothing here touches `live` or any legacy sheet (SVMI, TL Monitoring, CAPAR, PMS).
+
+### Already created for you (names only)
+
+| What | Name | Used as |
+| --- | --- | --- |
+| Drive folder | `TDMS-test` | Script Property `DRIVE_ROOT_ID` |
+| Google Sheet, inside that folder | `TDMS-test-DB` | Script Property `DB_ID` |
+| Tab in that sheet | `_meta` | A1 `key`, B1 `value`, A2 `environment`, B2 `test` |
+
+Both are in the account's own Drive and not shared. Claude gave you the IDs in chat. They never go into the repository.
+
+### Browser-only path (no terminal, no clasp)
+
+Use this path to create the Apps Script project "TDMS test" without installing anything.
+
+1. Open https://script.google.com signed in as `lheii.fcsitraining@gmail.com`. Choose New project and rename it to `TDMS test`.
+2. Open Project Settings and turn on "Show appsscript.json manifest file in editor". Back in the editor, open `appsscript.json`.
+3. Open `src/appsscript.json` in the repository and copy all of it. Replace the whole content of `appsscript.json` in the editor with it, then save. It sets V8, time zone `Asia/Manila`, no OAuth scopes, and the web app settings.
+4. In Project Settings, under Script Properties, add:
+
+| Property | Value |
+| --- | --- |
+| `ENV` | `test` |
+| `DB_ID` | the ID of `TDMS-test-DB` |
+| `DRIVE_ROOT_ID` | the ID of the `TDMS-test` folder |
+
+5. Check Project Settings: the time zone must be `(GMT+08:00) Asia/Manila`. Do not create a web app deployment yet (slice 0-005, spike S-06).
+6. Check by eye that `ENV` equals the `environment` value in the `_meta` tab (`test`). The run-time guard arrives in slice 2-006.
+
+`clasp` and `tools/deploy.js` are only needed once real code exists to push (slice 1-006, the first deployed shell). Until then the project holds only the manifest. When that time comes, the terminal path is the same as dev: `clasp create` (then the `mv` and `git checkout` fixes in step 2 above), `.clasp.test.json`, and `node tools/deploy.js test`. Deploying `test` never needs `--live`, and `deploy.js` refuses `--live` for any environment other than `live`.
+
+### Reset to seed
+
+No tables or seed data exist yet, so there is nothing to reset. The procedure is documented when the first tables and seed tools arrive.
