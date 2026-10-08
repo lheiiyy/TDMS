@@ -1,6 +1,6 @@
 # Runbook: dev environment (TDMS-0-002)
 
-Owner: Leo. Account: `lheii.fcsitraining@gmail.com` (interim G-01: dev and test only; the live environment needs the company account, D012). This runbook creates nothing in `live`.
+Owner: Leo. Account: `lheii.fcsitraining@gmail.com`. By D069 the same account owns dev, test and live (interim; see [account-transfer](account-transfer.md)). The dev and test steps create nothing in `live`; the live shell is described at the end.
 
 Rules: never commit a script ID, spreadsheet ID or folder ID. The IDs go into the local, git-ignored `.clasp.dev.json` and into Script Properties only ([ARCHITECTURE §16.2](../ARCHITECTURE.md), ARC-04).
 
@@ -75,7 +75,7 @@ To check by hand for now: `ENV` in Script Properties must equal the `environment
 
 - **Web app access.** The manifest uses `executeAs: USER_DEPLOYING` and `access: ANYONE_ANONYMOUS` (ARCHITECTURE AD-01), because users sign in with Employee ID and not a Google identity. The fallback `DOMAIN` exists only on a Google Workspace account; a personal Gmail account cannot use it. Spike S-06 (slice 0-005) decides.
 - **OAuth scopes.** `oauthScopes` is empty on purpose: 0-002 uses no Google service. Each later slice adds only the scope its adapter needs.
-- **Test and live.** `test` is described below (slice 0-003). `live` waits for slice 0-004 and the company account.
+- **Test and live.** `test` is described below (slice 0-003). `live` is described in the last section (slice 0-004).
 - **Reset.** To start over, delete the Apps Script project, remove `.clasp.dev.json`, and repeat step 2. The Drive folder and sheet can stay.
 
 ## Test environment (TDMS-0-003)
@@ -115,3 +115,43 @@ Use this path to create the Apps Script project "TDMS test" without installing a
 ### Reset to seed
 
 No tables or seed data exist yet, so there is nothing to reset. The procedure is documented when the first tables and seed tools arrive.
+
+## Live shell (TDMS-0-004)
+
+Same account (D069). This creates an **empty shell only**: no data, no users, no web app deployment, no code push.
+
+### Already created for you (names only)
+
+| What | Name | Used as |
+| --- | --- | --- |
+| Drive folder | `TDMS-live` | Script Property `DRIVE_ROOT_ID` |
+| Google Sheet, inside that folder | `TDMS-live-DB` | Script Property `DB_ID` |
+| Tab in that sheet | `_meta` | A1 `key`, B1 `value`, A2 `environment`, B2 `live` |
+
+Both are in the account's own Drive and not shared. Claude gave you the IDs in chat. They never go into the repository.
+
+### Browser-only path (tablet, no terminal)
+
+1. Open https://script.google.com signed in as `lheii.fcsitraining@gmail.com`. Choose New project and rename it to `TDMS live`.
+2. Open Project Settings and turn on "Show appsscript.json manifest file in editor". Back in the editor, open `appsscript.json`.
+3. Open `src/appsscript.json` in the repository and copy all of it. Replace the whole content of `appsscript.json` in the editor with it, then save.
+4. In Project Settings, under Script Properties, add:
+
+| Property | Value |
+| --- | --- |
+| `ENV` | `live` |
+| `DB_ID` | the ID of `TDMS-live-DB` |
+| `DRIVE_ROOT_ID` | the ID of the `TDMS-live` folder |
+
+5. Check Project Settings: the time zone must be `(GMT+08:00) Asia/Manila`. Do **not** create a web app deployment.
+6. Check by eye that `ENV` equals the `environment` value in the `_meta` tab (`live`). The run-time guard arrives in slice 2-006.
+
+### Before any real data
+
+- Turn on 2-step verification on the account.
+- Name the backup editor (gate G-08, open). Close it **before the first real data import**.
+- Limit or disable the Claude Drive/Sheets connectors for this account, or move live to an account without them (gate G-09), **before real employee data enters live**.
+- No real data in live before slice 2-006 (the environment guard refuses at run time).
+- Deploy to live only when Leo says so, after a dated live backup: `node tools/deploy.js live --live --backup-date yyyy-mm-dd`. The date is a reminder, not proof of a backup.
+- To move the account later, follow [account-transfer](account-transfer.md).
+

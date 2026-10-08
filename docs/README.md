@@ -44,6 +44,7 @@ Claude Code reads, in order: `CLAUDE.md` -> [PROJECT-STATE](PROJECT-STATE.md) ->
 
 | Doc | Purpose |
 | --- | --- |
-| [runbooks/dev-environment](runbooks/dev-environment.md) | Steps to create the dev environment (TDMS-0-002) |
+| [runbooks/dev-environment](runbooks/dev-environment.md) | Steps to create the dev, test and live-shell environments (TDMS-0-002 to 0-004) |
+| [runbooks/account-transfer](runbooks/account-transfer.md) | Moving TDMS to another Google account (draft; verified in spike S-09) |
 
 Also here: `roadmap.png` (roadmap picture).
