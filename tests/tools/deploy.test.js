@@ -105,6 +105,17 @@ test('deploy: dev and test run clasp push with their own config file from the re
   }
 });
 
+test('deploy: test never deploys live: --live is refused and the live config is never read for it', () => {
+  const files = { [cfgFile('live')]: good(), [cfgFile('test')]: good() };
+  let r = run(['test', '--live'], files);
+  assert.equal(r.code, 1);
+  assert.equal(r.spawned.length, 0);
+  r = run(['test'], { [cfgFile('live')]: good() });
+  assert.equal(r.code, 1);
+  assert.match(r.errors[0], /Missing \.clasp\.test\.json/);
+  assert.equal(r.spawned.length, 0);
+});
+
 test('deploy: live runs only with the explicit flag', () => {
   const r = run(['live', '--live'], { [cfgFile('live')]: good() });
   assert.equal(r.code, 0);
