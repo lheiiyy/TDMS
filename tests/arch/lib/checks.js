@@ -89,7 +89,7 @@ function scanRepoForIds(root) {
       if (e.isDirectory()) walk(p);
       else if (/\.(js|json|yml|yaml|template|md|html)$/.test(e.name)) {
         const t = fs.readFileSync(p, 'utf8');
-        for (const re of [GOOGLE_URL_ID, /AKfycb[A-Za-z0-9_-]{20,}/, /-----BEGIN [A-Z ]*PRIVATE KEY-----/]) {
+        for (const re of [GOOGLE_URL_ID, /AKfycb[A-Za-z0-9_-]{20,}/, /"scriptId"\s*:\s*"(?!<)[A-Za-z0-9_-]{20,}"/, /-----BEGIN [A-Z ]*PRIVATE KEY-----/]) {
           const m = t.match(re);
           if (m) v.push({ file: path.relative(root, p), line: 0, token: m[0].slice(0, 40), rule: 'REPO-ID' });
         }

@@ -7,6 +7,7 @@ const { main } = require('../../tools/deploy');
 const lib = require('../../tools/lib/deploy-args');
 
 const ROOT = '/repo';
+const TODAY = '2026-10-08';
 const good = (extra) => JSON.stringify(Object.assign({ scriptId: 'FAKE-SCRIPT-ID', rootDir: 'src' }, extra));
 
 function run(argv, files, spawn) {
@@ -18,6 +19,7 @@ function run(argv, files, spawn) {
     spawnSync: (cmd, args, opts) => { out.spawned.push({ cmd, args, opts }); return spawn || { status: 0 }; },
     log: (m) => out.logs.push(m),
     error: (m) => out.errors.push(m),
+    today: () => TODAY,
   };
   out.code = main(argv, deps);
   return out;
@@ -81,6 +83,7 @@ test('deploy: refuses when src/appsscript.json is missing', () => {
     spawnSync: () => { out.spawned.push(1); return { status: 0 }; },
     log: () => {},
     error: (m) => out.errors.push(m),
+    today: () => TODAY,
   };
   assert.equal(main(['dev'], deps), 1);
   assert.match(out.errors[0], /appsscript\.json/);
@@ -116,11 +119,45 @@ test('deploy: test never deploys live: --live is refused and the live config is 
   assert.equal(r.spawned.length, 0);
 });
 
-test('deploy: live runs only with the explicit flag', () => {
-  const r = run(['live', '--live'], { [cfgFile('live')]: good() });
+test('deploy: live runs only with --live and a fresh --backup-date', () => {
+  for (const day of [TODAY, '2026-10-07']) {
+    const r = run(['live', '--live', '--backup-date', day], { [cfgFile('live')]: good() });
+    assert.equal(r.code, 0, day);
+    assert.deepEqual(r.spawned[0].args, ['push', '--project', '.clasp.live.json']);
+    assert.ok(r.logs[0].includes('LIVE'));
+    assert.ok(r.logs.some((l) => l.includes('reminder only')), 'must say the date is a reminder, not proof');
+  }
+});
+
+test('deploy: live is refused without a backup date, or with a missing value', () => {
+  for (const argv of [['live', '--live'], ['live', '--live', '--backup-date'], ['live', '--live', '--backup-date', '--dry-run']]) {
+    const r = run(argv, { [cfgFile('live')]: good() });
+    assert.equal(r.code, 1, argv.join(' '));
+    assert.equal(r.spawned.length, 0);
+    assert.match(r.errors[0], /backup-date/);
+  }
+});
+
+test('deploy: live is refused for a backup date that is stale, in the future or not a real date', () => {
+  for (const day of ['2026-10-06', '2026-09-01', '2026-10-09', '2027-01-01', '2026-13-40', '2026-02-30', '2026-10-8', '08-10-2026', 'yesterday', '']) {
+    const r = run(['live', '--live', '--backup-date', day], { [cfgFile('live')]: good() });
+    assert.equal(r.code, 1, JSON.stringify(day));
+    assert.equal(r.spawned.length, 0);
+    assert.match(r.errors[0], /backup-date/);
+  }
+});
+
+test('deploy: --backup-date is refused for dev and test, and a dry run for live still needs a valid date', () => {
+  for (const env of ['dev', 'test']) {
+    const r = run([env, '--backup-date', TODAY], { [cfgFile(env)]: good() });
+    assert.equal(r.code, 1);
+    assert.equal(r.spawned.length, 0);
+  }
+  let r = run(['live', '--live', '--dry-run'], { [cfgFile('live')]: good() });
+  assert.equal(r.code, 1);
+  r = run(['live', '--live', '--dry-run', '--backup-date', TODAY], { [cfgFile('live')]: good() });
   assert.equal(r.code, 0);
-  assert.deepEqual(r.spawned[0].args, ['push', '--project', '.clasp.live.json']);
-  assert.ok(r.logs[0].includes('LIVE'));
+  assert.equal(r.spawned.length, 0);
 });
 
 test('deploy: clasp failure and a missing clasp binary are reported', () => {
