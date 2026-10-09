@@ -108,7 +108,7 @@ PH-0 ─ PH-1 ─ PH-2 ─ PH-3 ─ PH-4 ─ PH-5 ─ PH-6 ─ PH-7 ─ PH-8
 | Needed before | Item | Decision |
 | --- | --- | --- |
 | **0-001** | **G-04** | Approve or amend the repository layout and deploy flow (ARCHITECTURE §0.3, §16.4) |
-| **0-002** | **G-01** | Google account that owns the scripts, sheets and Drive. Answered 2026-10-08: personal Gmail for all environments (D069). Backup editor open (G-08) |
+| **0-002** | **G-01** | Google account that owns the scripts, sheets and Drive. Answered 2026-10-08: personal Gmail for all environments (D069). Backup editor named, not shared yet (G-08 open until sharing and 2-step verification are done) |
 | **0-002**, 1-001 | **G-03** | Organisation time zone |
 | 0-005 | AO-02 / S-06 | Confirm the account may run a web app as owner with "Anyone" access |
 | 2-001 | **G-05** | Approve DATA-MODEL and the history design (PROP-004) |
@@ -178,7 +178,7 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | 0-001 | T | Initialise `lheiiyy/TDMS`: folder layout, `CLAUDE.md`, docs copy, `.gitignore`, `package.json` with a dependency-free Node test runner, ARC static checks (ARC-01–04, 07, 08, 10 active; 05, 06, 09, 11, 12 scaffolded as pending), minimal CI workflow. **First Claude Code task, §9** | — | G-04 | ARC-01–12, PLAT | M |
 | 0-002 | T | Create the **dev** environment: Apps Script project (V8, manifest with time zone), database spreadsheet with `_meta`, Drive folders, Script Properties, `clasp` config template, deploy script, environment guard test | 0-001 | G-01, G-03 | PLAT | M |
 | 0-003 | T | Create the **test** environment and the promotion tool (same commit pushed dev → test); repeat the guard test; document reset-to-seed procedure | 0-002 | G-01 | PLAT | S |
-| 0-004 | T | Create the **live shell**: project owned by the interim personal account (D069), empty spreadsheet with marker, folder, 2-step verification on the account and a named backup editor (G-08, open until the first real import), no data and no users, no web app deployment | 0-003 | — | PLAT | S |
+| 0-004 | T | Create the **live shell**: project owned by the interim personal account (D069), empty spreadsheet with marker, folder, 2-step verification on the account and a named backup editor (G-08: named, not shared yet; stays open until the sharing and 2-step verification are done and before the first real import), no data and no users, no web app deployment | 0-003 | — | PLAT | S |
 | 0-005 | T | Run **spike S-06 + S-08**: deploy a hello web app as owner with "Anyone" access, echo a `system.ping` envelope, record mail/trigger/concurrency quotas, prove multi-project `clasp` push and the environment guard | 0-003 | AO-02 | spike report | S |
 | 0-006 | T | Run **spike S-01 + S-05**: lazy-load a module view and script in the sandbox; test device storage persistence on iOS Safari and Android Chrome | 0-005 | — | spike report | S |
 | 0-007 | T | Run **spike S-02**: benchmark iterated HMAC-SHA256 to choose the iteration count and record the sign-in time | 0-003 | — | spike report | S |
