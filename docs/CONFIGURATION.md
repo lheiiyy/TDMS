@@ -4,7 +4,7 @@ Status: FINAL BLUEPRINT for review. Supersedes Configuration Inventory v0.1. Log
 Authority: Handover (D001–D068, §3–§7, §5.8, §5.9) > Plan Audit §E > other approved docs > prototype `RULES` / `cfg.lists` (evidence only, tagged **P**).
 Companion docs: DATA-MODEL (ENT-001, 003, 004, 015–019, 026, 100, 101), PERMISSIONS §8 ("configure" column, AMB-01, AMB-07), WORKFLOWS, ISSUE-REGISTER, DECISIONS.
 
-Setting IDs `CFG-nnn` are stable and keep their v0.1 numbers (other documents cite them). New IDs added by this audit: CFG-010.1–.5 (split of CFG-010), CFG-038, CFG-105, CFG-106.
+Setting IDs `CFG-nnn` are stable and keep their v0.1 numbers (other documents cite them). New IDs added by this audit: CFG-010.1–.5 (split of CFG-010), CFG-038, CFG-105, CFG-106, CFG-107.
 
 ---
 
@@ -104,7 +104,7 @@ A due date or expiry date is stored when it is created. Changing a setting or ad
 
 | Class | Count | Notes |
 | --- | --- | --- |
-| CONFIGURABLE | 51 settings (CFG-010 counted as five) | 11 have a value still pending (CFG-007, 008 (who), 013, 018, 019, 050, 051, 052, 060 (three targets), 061, 062); CFG-063 is conditional on IT approval |
+| CONFIGURABLE | 52 settings (CFG-010 counted as five) | 12 have a value still pending (CFG-007, 008 (who), 013, 018, 019, 050, 051, 052, 060 (three targets), 061, 062, 107); CFG-063 is conditional on IT approval |
 | FIXED | 31 rules (FX-001–031), covering CFG-005, 006, 031, 076, 085, 103 | Section 2.1 |
 | SYSTEM | 11 items (SY-001–011) | Section 2.2 |
 | DECISION | 15 settings (CFG-011, 032, 036, 038, 047, 054, 083, 084, 090, 091, 093, 094, 104, 105, 106); 39 open decisions CD-01–39 | Section 3 |
@@ -126,7 +126,7 @@ Columns: ID · Setting (name — description) · Type · Validation / allowed va
 | CFG-002 | **Wrong passwords before pause** — failed sign-ins before the account is paused | int | S | 5 | I | A | A1 | N4 | H1 |
 | CFG-003 | **Pause length** — minutes the account stays paused after CFG-002 | int | S | 15 min | I | A | A1 | N4 | H1 |
 | CFG-004 | **Officer edit window** — hours an officer may edit own records after creating them | int | S; P range 1–168 | 24 h | I | A | A2 | N3 — evaluated at the edit attempt using the version in force then (CD-36) | H1 |
-| CFG-007 | **Email sender address** — account that sends reset links, QA PDFs and notices | email | valid email; must be the account that owns the script (interim: personal Gmail `lheii.fcsitraining@gmail.com`, D069) | **REQUIRES DECISION** (CD-01) | I | A | A2 | N0 (future sends only) | H1 |
+| CFG-007 | **Email sender address** — account that sends reset links, QA PDFs and notices | email | valid email; must equal the owner account held in Script Properties (SY-003); the setting is checked against it, never hard-coded (interim owner: personal Gmail `lheii.fcsitraining@gmail.com`, D069) | **REQUIRES DECISION** (CD-01) | I | A | A2 | N0 (future sends only) | H1 |
 | CFG-008 | **Permission matrix** — which role may do which action, with scope | matrix | one entry per PERM-nnn × role; scope in {own, assigned brand, assigned store, all, delegated}; the last active Admin cannot lose Admin rights | seeded from PERMISSIONS §8 | E | **REQUIRES DECISION** (CD-02; proposed A) | A2 | N4 | H1 (ENT-026 VER) |
 | CFG-009 | **EXECom officer flag (FLAG-001)** — per TDD user; gives EXECom report access | bool per user | at least one active holder; not delegable | ≥ 1 holder | I | A | A2 | N4 | field history |
 
@@ -186,6 +186,7 @@ Columns: ID · Setting (name — description) · Type · Validation / allowed va
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | CFG-060 | **Stage target days** (working days) for Failed→Scheduled, Scheduled→Verified, Verified→Endorsed, Endorsed→Closed | int × 4 | S | Failed→Scheduled **7**; the other three **REQUIRES DECISION** (CD-15) | E | A | A2 | **N1** — each case stores its stage `due_on` and `sla_version_id`; "overdue" uses the stored date | H1 + H3 |
 | CFG-061 | **QA email address** — recipient of the CAPAR PDF (D030) | email | valid email | **REQUIRES DECISION** (CD-16) | I | A | A2 | N0 — each send records the address used | H1 + H3 |
+| CFG-107 | **Backup editor email** — the second person who can recover the live environment (G-08). A record and an input to the [account-transfer runbook](runbooks/account-transfer.md) only: it grants no access. Access is given by hand, by Leo, on the `TDMS-live` folder and the "TDMS live" Apps Script project; the mother folder `TDMS` is never shared (D070), except temporarily during an account move, as the runbook records | email | blank or a valid email; blank means not yet set | **blank (value pending)**; the address is recorded in DECISION-GATE G-08 and entered here after the first deploy; never stored in `config/` seed files | I | A | A2 | N0 | H1 |
 | CFG-062 | **Photos per finding; maximum file size** | int × 2 | S | **REQUIRES DECISION** (CD-17) | I | A | A1 | N0 — photos already stored are kept | H1 |
 | CFG-063 | **AI provider and model** for the CAPAR AI checklist (D065) | enum + text | provider from an approved list | Gemini (testing). **Conditional on IT approval** (ISS-P0-18) | I | A | A2 | N0 | H1 + H3 |
 
@@ -264,7 +265,7 @@ These are not business settings. They change only by a release, with a decision 
 | --- | --- | --- | --- |
 | SY-001 | AI API key (CFG-064) | Script Properties only; never in a sheet | §7.11 |
 | SY-002 | ID prefixes and formats, audit columns, `row_version`, date/timestamp formats, EXECom report column set (CFG-100) | Code constants | §7.10, Audit §E |
-| SY-003 | Spreadsheet and Drive folder IDs per environment, API key, owner account (CFG-101) | Script Properties; dev and live separated | §2, D047, D012 (superseded by D069) |
+| SY-003 | Spreadsheet and Drive folder IDs per environment, API key, owner account (CFG-101) | Script Properties; dev and live separated. The owner account is read from there and appears in no setting and no code (ARC-13); CFG-007 is checked against it | §2, D047, D012 (superseded by D069) |
 | SY-004 | Page size 50, cache lifetimes, trigger schedules, lock timeouts (CFG-102) | Technical | §2, §8 |
 | SY-005 | Session storage design | Hashed token; storage per Auth packet (ISS-P0-03) | DATA-MODEL ENT-030 |
 | SY-006 | Cell limit 50,000 characters; snapshots stored as rows | Sheets limit | DATA-MODEL P10 |
