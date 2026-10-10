@@ -231,3 +231,13 @@ test('deploy lib: the environment list is dev, test, live and file names follow 
   assert.deepEqual(lib.ENVIRONMENTS, ['dev', 'test', 'live']);
   assert.equal(lib.configFileName('test'), '.clasp.test.json');
 });
+
+test('deploy S-08: with all three configs present, dev and test each push their own project and live is never touched', () => {
+  const all = { [cfgFile('dev')]: good(), [cfgFile('test')]: good(), [cfgFile('live')]: good() };
+  const sent = [];
+  for (const argv of [['dev'], ['test'], ['live'], ['live', '--dry-run'], ['dev', '--live']]) {
+    const r = run(argv, all);
+    sent.push(...r.spawned.map((s) => s.args.join(' ')));
+  }
+  assert.deepEqual(sent, ['push --project .clasp.dev.json', 'push --project .clasp.test.json']);
+});
