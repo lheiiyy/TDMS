@@ -167,7 +167,7 @@ Both are in the account's own Drive and not shared. Claude gave you the IDs in c
 ### Before any real data
 
 - Turn on 2-step verification on the account.
-- Backup editor (gate G-08): named on 2026-10-08, recorded in DECISION-GATE G-08 (spelling to be confirmed by Leo), **not shared yet**. Leo shares by hand, only the `TDMS-live` folder and the "TDMS live" Apps Script project (never the mother folder, D070), and turns on 2-step verification on both accounts. G-08 stays open until that is done, and must be closed **before the first real data import**.
+- Backup editor (gate G-08): named on 2026-10-08, recorded in DECISION-GATE G-08 (address confirmed by Leo, 2026-10-09), **not shared yet**. Leo shares by hand, only the `TDMS-live` folder and the "TDMS live" Apps Script project (never the mother folder, D070), and turns on 2-step verification on both accounts. G-08 stays open until that is done, and must be closed **before the first real data import**.
 - Limit or disable the Claude Drive/Sheets connectors for this account, or move live to an account without them (gate G-09), **before real employee data enters live**.
 - No real data in live before slice 2-006 (the environment guard refuses at run time).
 - Deploy to live only when Leo says so, after a dated live backup: `node tools/deploy.js live --live --backup-date yyyy-mm-dd`. The date is a reminder, not proof of a backup.
