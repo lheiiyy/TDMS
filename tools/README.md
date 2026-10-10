@@ -24,6 +24,8 @@ Pushes `src/` with `clasp push --project .clasp.<env>.json`. No dependencies; ne
 
 **The backup date is a reminder, not proof.** The script cannot check that a backup exists. Take the dated live backup first, and deploy to live only when Leo says so (CLAUDE.md).
 
+**Windows.** npm installs clasp as `clasp.cmd`, which Node cannot start without a shell. On Windows only (`win32`) the script therefore runs clasp through the shell, as one fixed command string. The arguments come only from the validated environment name and the fixed config file name, and each must match `[A-Za-z0-9._-]+` or the script refuses before spawning. Mac and Linux run clasp directly, with no shell. If clasp is still not found on Windows, check `where clasp`.
+
 `--dry-run` prints the command and pushes nothing. Setup steps: [docs/runbooks/dev-environment.md](../docs/runbooks/dev-environment.md).
 
 ## Future deploy flow (ARCHITECTURE §16.4, approved layout)

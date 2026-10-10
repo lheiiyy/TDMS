@@ -76,8 +76,23 @@ function claspPushArgs(file) {
   return ['push', '--project', file];
 }
 
+const SAFE_ARG_RE = /^[A-Za-z0-9._-]+$/;
+
+// How to start clasp on a platform. On win32 npm installs clasp as clasp.cmd, which spawnSync cannot
+// start without a shell (and newer Node refuses .cmd files without one). So the shell is used on win32
+// only, with one command string and no args array (the args array with a shell is deprecated in Node 24).
+// Every argument must match an allowlist first, so no text a user typed can reach the shell.
+// Returns { ok, command, args, shell } or { ok: false, error }.
+function claspInvocation(args, platform) {
+  for (const a of args) {
+    if (!SAFE_ARG_RE.test(a)) return refuse('Unsafe clasp argument refused: ' + JSON.stringify(a));
+  }
+  if (platform === 'win32') return { ok: true, command: ['clasp'].concat(args).join(' '), args: [], shell: true };
+  return { ok: true, command: 'clasp', args: args, shell: false };
+}
+
 function refuse(error) {
   return { ok: false, error: error };
 }
 
-module.exports = { ENVIRONMENTS, configFileName, parseArgs, checkBackupDate, validateClaspConfig, claspPushArgs };
+module.exports = { ENVIRONMENTS, configFileName, parseArgs, checkBackupDate, validateClaspConfig, claspPushArgs, claspInvocation };

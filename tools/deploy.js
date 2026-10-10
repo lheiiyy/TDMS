@@ -16,6 +16,7 @@ function realDeps() {
     spawnSync: require('node:child_process').spawnSync,
     log: function (m) { console.log(m); },
     error: function (m) { console.error(m); },
+    platform: process.platform,
     root: ROOT,
     // Today in Asia/Manila as yyyy-mm-dd (the project time zone, gate G-03).
     today: function () { return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }); },
@@ -53,8 +54,13 @@ function main(argv, deps) {
     deps.log('Dry run: nothing was pushed.');
     return 0;
   }
-  const res = deps.spawnSync('clasp', args, { cwd: deps.root, stdio: 'inherit' });
-  if (res.error) return refuse(deps, 'Could not run clasp: ' + res.error.message + '. Install it with: npm install -g @google/clasp');
+  const inv = lib.claspInvocation(args, deps.platform);
+  if (!inv.ok) return refuse(deps, inv.error);
+  const res = deps.spawnSync(inv.command, inv.args, { cwd: deps.root, stdio: 'inherit', shell: inv.shell });
+  if (res.error) {
+    return refuse(deps, 'Could not run clasp: ' + res.error.message + '. Install it with: npm install -g @google/clasp'
+      + (deps.platform === 'win32' ? ' On Windows, clasp.cmd must be on PATH (check with: where clasp).' : ''));
+  }
   return typeof res.status === 'number' ? res.status : 1;
 }
 
