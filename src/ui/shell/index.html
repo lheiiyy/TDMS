@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <title>TDMS</title>
+  </head>
+  <body>
+    <h1>TDMS</h1>
+    <button id="ping" type="button">Ping</button>
+    <pre id="out"></pre>
+    <?!= include_('ui/shell/api') ?>
+    <script>
+      document.getElementById('ping').addEventListener('click', function () {
+        var out = document.getElementById('out');
+        out.textContent = 'Waiting...';
+        api.ping().then(function (r) { out.textContent = JSON.stringify(r, null, 2); });
+      });
+    </script>
+  </body>
+</html>

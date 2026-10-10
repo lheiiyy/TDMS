@@ -1,0 +1,22 @@
+<script>
+  // api.js: the only code in the browser that talks to the server (CLAUDE.md layers). It calls tdmsApi and nothing else.
+  var api = (function () {
+    var BUILD = 'spike-0-005';
+    function uuid() {
+      var b = crypto.getRandomValues(new Uint8Array(16));
+      b[6] = (b[6] & 15) | 64;
+      b[8] = (b[8] & 63) | 128;
+      var h = Array.prototype.map.call(b, function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+      return [h.slice(0, 8), h.slice(8, 12), h.slice(12, 16), h.slice(16, 20), h.slice(20)].join('-');
+    }
+    function call(method, params) {
+      return new Promise(function (resolve) {
+        google.script.run
+          .withSuccessHandler(resolve)
+          .withFailureHandler(function () { resolve({ ok: false, error: { code: 'TRANSPORT' } }); })
+          .tdmsApi({ v: 1, build: BUILD, rid: uuid(), method: method, params: params || {} });
+      });
+    }
+    return { ping: function () { return call('system.ping'); } };
+  })();
+</script>

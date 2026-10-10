@@ -17,8 +17,23 @@ test('manifest: web app runs as the owner with anonymous access (AD-01; S-06 may
   assert.equal(manifest.webapp.access, 'ANYONE_ANONYMOUS');
 });
 
-test('manifest: no OAuth scopes in 0-002; each later slice adds the scope its adapter needs', () => {
-  assert.deepEqual(manifest.oauthScopes, []);
+// SPIKE ONLY (slice 0-005, approved by Leo for the spike): read the _meta tab, and read the remaining mail quota.
+// To be reviewed at 0-010 before any live push. Each later slice adds only the scope its adapter needs.
+test('manifest: only the two spike-only OAuth scopes are declared (review at 0-010)', () => {
+  assert.deepEqual(manifest.oauthScopes, [
+    'https://www.googleapis.com/auth/spreadsheets.readonly',
+    'https://www.googleapis.com/auth/script.send_mail',
+  ]);
+});
+
+test('manifest: apart from the scopes it is unchanged since 0-002', () => {
+  const { oauthScopes, ...rest } = manifest;
+  assert.deepEqual(rest, {
+    timeZone: 'Asia/Manila',
+    runtimeVersion: 'V8',
+    exceptionLogging: 'STACKDRIVER',
+    webapp: { executeAs: 'USER_DEPLOYING', access: 'ANYONE_ANONYMOUS' },
+  });
 });
 
 test('manifest: holds no script, spreadsheet or Drive ID', () => {
