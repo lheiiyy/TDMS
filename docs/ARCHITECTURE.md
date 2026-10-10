@@ -53,7 +53,7 @@ Dependency directions (a layer may call only the layer(s) to its right in the li
 | Repository | Platform adapters (Lock, Cache, Props), `SpreadsheetApp` | Services, rules (it knows tables, not business) |
 | Platform adapters | The Google service they wrap | Everything else |
 
-**Enforced, not hoped for (Proposed, tests ARC-01..ARC-12 in §0.6).** `SpreadsheetApp` appears only under `repository/`; `DriveApp` only in the FileStore adapter and the backup adapter; `MailApp`/`GmailApp` only in the Mail adapter; `UrlFetchApp` only in the Http adapter; `PropertiesService` only in `core/env`; `Date`/`Utilities.getUuid` only in Clock/Ids. A static test fails the build otherwise.
+**Enforced, not hoped for (Proposed, tests ARC-01..ARC-13 in §0.6).** `SpreadsheetApp` appears only under `repository/`; `DriveApp` only in the FileStore adapter and the backup adapter; `MailApp`/`GmailApp` only in the Mail adapter; `UrlFetchApp` only in the Http adapter; `PropertiesService` only in `core/env`; `Date`/`Utilities.getUuid` only in Clock/Ids. A static test fails the build otherwise.
 
 ### 0.3 Repository layout (Proposed; confirms HANDOFF-MODEL §7 for gate G-04)
 
@@ -139,6 +139,7 @@ Status **APPROVED-SRC** = follows an approved source. **PROPOSED** = this docume
 | ARC-10 | No file performs I/O at load time (load order independence) |
 | ARC-11 | Every list method declares a filter whitelist and a sort whitelist |
 | ARC-12 | Every repository read of a scoped entity requires a scope argument (explicit `SCOPE_ALL` allowed only for system callers) |
+| ARC-13 | No email address literal in `src/`, `tests/`, `tools/` or `config/`. Addresses come from Script Properties (owner account) or the `settings` table (CFG-007, 061, 107). Docs may name the interim account. Active immediately |
 
 ---
 
@@ -583,7 +584,7 @@ Minimum approved is one non-live environment (D047); two are recommended because
 
 ### 16.2 What is separate
 
-Each environment has its own Apps Script project (script ID), web-app deployment URL, database spreadsheet, archive spreadsheets, backup folder, files folder and Script Properties (`ENV`, `DB_ID`, `ARCHIVE_IDS`, `DRIVE_ROOT_ID`, `BACKUP_ROOT_ID`, mail sender, AI key if any). All IDs and secrets live in Script Properties only (ARC-04, CFG-101, R12).
+Each environment has its own Apps Script project (script ID), web-app deployment URL, database spreadsheet, archive spreadsheets, backup folder, files folder and Script Properties (`ENV`, `DB_ID`, `ARCHIVE_IDS`, `DRIVE_ROOT_ID`, `BACKUP_ROOT_ID`, owner account, AI key if any; the mail sender and the backup editor are settings, CFG-007 and CFG-107). All IDs and secrets live in Script Properties only (ARC-04, CFG-101, R12).
 
 Drive layout (D070): one mother folder `TDMS` holds one subfolder per environment (`TDMS-dev`, `TDMS-test`, `TDMS-live`) and `_apps-script`; `DRIVE_ROOT_ID` is the environment subfolder, never the mother, and the mother is never shared. See [dev-environment runbook](runbooks/dev-environment.md).
 

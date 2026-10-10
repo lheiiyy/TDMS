@@ -100,4 +100,23 @@ function scanRepoForIds(root) {
   return v;
 }
 
-module.exports = { arc01, arc02, arc03, arc04, arc07, arc08, arc10, scanRepoForIds };
+// ARC-13: no email address literal in src/, tests/, tools/ or config/. Addresses come from Script Properties or the settings table.
+// Reserved example domains are allowed so tests can use obviously fake addresses. Docs are not scanned.
+const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
+const EMAIL_ALLOWED = /@(?:[A-Za-z0-9-]+\.)*(?:example\.(?:com|org|net)|invalid)$/i;
+const EMAIL_DIRS = ['src', 'tests', 'tools', 'config'];
+const arc13 = (root) => {
+  const v = [];
+  for (const d of EMAIL_DIRS) {
+    for (const p of S.listFiles(path.join(root, d))) {
+      const text = fs.readFileSync(p, 'utf8');
+      for (const h of S.findAll(text, EMAIL)) {
+        if (EMAIL_ALLOWED.test(h.match)) continue;
+        v.push({ file: path.relative(root, p).split(path.sep).join('/'), line: S.lineOf(text, h.index), token: h.match.slice(0, 40), rule: 'ARC-13' });
+      }
+    }
+  }
+  return v;
+};
+
+module.exports = { arc01, arc02, arc03, arc04, arc07, arc08, arc10, arc13, scanRepoForIds };
