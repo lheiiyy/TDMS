@@ -75,7 +75,7 @@ node tools/deploy.js dev --dry-run
 node tools/deploy.js dev
 ```
 
-The dry run prints `clasp push --project .clasp.dev.json` and pushes nothing. The script refuses if `.clasp.dev.json` is missing, still has the template placeholder, or has a `rootDir` other than `src`. It never pushes `live` without `--live`.
+The dry run prints `clasp push --project .clasp.dev.json` and pushes nothing. The script refuses if `.clasp.dev.json` is missing, still has the template placeholder, or has a `rootDir` other than `src`. It never pushes `live` without `--live`. This works on Windows (Command Prompt or PowerShell), Mac and Linux; on Windows `clasp.cmd` must be on PATH (check with `where clasp`).
 
 ### 5. Check the project
 

@@ -10,11 +10,12 @@ const ROOT = '/repo';
 const TODAY = '2026-10-08';
 const good = (extra) => JSON.stringify(Object.assign({ scriptId: 'FAKE-SCRIPT-ID', rootDir: 'src' }, extra));
 
-function run(argv, files, spawn) {
+function run(argv, files, spawn, platform) {
   const out = { logs: [], errors: [], spawned: [] };
   const present = Object.assign({ [path.join(ROOT, 'src', 'appsscript.json')]: '{}' }, files);
   const deps = {
     root: ROOT,
+    platform: platform || 'linux',
     fs: { existsSync: (p) => p in present, readFileSync: (p) => present[p] },
     spawnSync: (cmd, args, opts) => { out.spawned.push({ cmd, args, opts }); return spawn || { status: 0 }; },
     log: (m) => out.logs.push(m),
@@ -166,6 +167,64 @@ test('deploy: clasp failure and a missing clasp binary are reported', () => {
   r = run(['dev'], { [cfgFile('dev')]: good() }, { error: new Error('ENOENT') });
   assert.equal(r.code, 1);
   assert.match(r.errors[0], /npm install -g @google\/clasp/);
+});
+
+test('deploy: non-win32 runs clasp directly, without a shell', () => {
+  for (const platform of ['linux', 'darwin']) {
+    const r = run(['dev'], { [cfgFile('dev')]: good() }, null, platform);
+    assert.equal(r.spawned[0].cmd, 'clasp');
+    assert.deepEqual(r.spawned[0].args, ['push', '--project', '.clasp.dev.json']);
+    assert.equal(r.spawned[0].opts.shell, false);
+  }
+});
+
+test('deploy: win32 runs clasp through a shell with one fixed command string', () => {
+  const r = run(['test'], { [cfgFile('test')]: good() }, null, 'win32');
+  assert.equal(r.code, 0);
+  assert.equal(r.spawned.length, 1);
+  assert.equal(r.spawned[0].cmd, 'clasp push --project .clasp.test.json');
+  assert.deepEqual(r.spawned[0].args, []);
+  assert.equal(r.spawned[0].opts.shell, true);
+  assert.equal(r.spawned[0].opts.cwd, ROOT);
+});
+
+test('deploy: win32 live guards are unchanged', () => {
+  const files = { [cfgFile('live')]: good() };
+  let r = run(['live'], files, null, 'win32');
+  assert.equal(r.code, 1);
+  r = run(['live', '--live'], files, null, 'win32');
+  assert.equal(r.code, 1);
+  assert.equal(r.spawned.length, 0);
+  r = run(['live', '--live', '--backup-date', TODAY], files, null, 'win32');
+  assert.equal(r.spawned[0].cmd, 'clasp push --project .clasp.live.json');
+});
+
+test('deploy: a hostile environment name is refused before anything is spawned, on every platform', () => {
+  const hostile = ['dev & calc', 'dev && del *', 'dev|whoami', 'dev;ls', '$(id)', '`id`', 'dev"', '..\\dev', 'dev\ncalc'];
+  for (const platform of ['win32', 'linux']) {
+    for (const env of hostile) {
+      const r = run([env], { [cfgFile(env)]: good() }, null, platform);
+      assert.equal(r.code, 1, env);
+      assert.equal(r.spawned.length, 0, env);
+    }
+  }
+});
+
+test('deploy lib: claspInvocation refuses any argument outside the allowlist', () => {
+  for (const platform of ['win32', 'linux']) {
+    for (const bad of ['a b', 'a&b', 'a|b', 'a;b', 'a>b', '%PATH%', '$(x)', '"x"', '']) {
+      assert.equal(lib.claspInvocation(['push', '--project', bad], platform).ok, false, bad);
+    }
+  }
+});
+
+test('deploy: on win32 the ENOENT message keeps "Could not run clasp" and adds the clasp.cmd hint', () => {
+  let r = run(['dev'], { [cfgFile('dev')]: good() }, { error: new Error('ENOENT') }, 'win32');
+  assert.match(r.errors[0], /Could not run clasp/);
+  assert.match(r.errors[0], /clasp\.cmd must be on PATH/);
+  r = run(['dev'], { [cfgFile('dev')]: good() }, { error: new Error('ENOENT') }, 'linux');
+  assert.match(r.errors[0], /Could not run clasp/);
+  assert.doesNotMatch(r.errors[0], /clasp\.cmd/);
 });
 
 test('deploy lib: the environment list is dev, test, live and file names follow .clasp.<env>.json', () => {
