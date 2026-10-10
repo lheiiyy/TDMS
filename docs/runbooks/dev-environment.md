@@ -81,7 +81,7 @@ The dry run prints `clasp push --project .clasp.dev.json` and pushes nothing. Th
 
 In the Apps Script editor, open Project Settings. The time zone must be `(GMT+08:00) Asia/Manila` (manifest `timeZone`) and the runtime V8. The project has no code yet beyond the manifest, so there is nothing to run.
 
-Do not create a web app deployment yet. That belongs to slice 0-005 (spike S-06).
+Do not create a web app deployment on dev. The one spike deployment is on **test** only, in slice 0-005 (steps in [spikes/S-06-S-08](../spikes/S-06-S-08.md)).
 
 ### 6. Environment guard (what exists in 0-002)
 
