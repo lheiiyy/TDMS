@@ -1,6 +1,6 @@
 'use strict';
 // Reads the `_meta` tab of the environment's database spreadsheet (key | value rows; DATA-MODEL, ARCHITECTURE §16.3).
-// Read-only. SpreadsheetApp appears only under repository/ (ARC-01). Needs spreadsheets.readonly.
+// Read-only code. SpreadsheetApp appears only under repository/ (ARC-01). Needs the spreadsheets scope: openById requires it (spike finding F1).
 const MetaRepository = (function () {
   // Reads the `_meta` tab. Returns { tabFound, marker }: marker is the value of the `environment` row, or null when the row
   // is missing or its value is empty. Throws if the sheet cannot be opened. `app` is injectable for tests; it defaults to SpreadsheetApp.

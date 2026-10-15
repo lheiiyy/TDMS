@@ -21,7 +21,7 @@ test('manifest: web app runs as the owner with anonymous access (AD-01; S-06 may
 // To be reviewed at 0-010 before any live push. Each later slice adds only the scope its adapter needs.
 test('manifest: only the two spike-only OAuth scopes are declared (review at 0-010)', () => {
   assert.deepEqual(manifest.oauthScopes, [
-    'https://www.googleapis.com/auth/spreadsheets.readonly',
+    'https://www.googleapis.com/auth/spreadsheets',
     'https://www.googleapis.com/auth/script.send_mail',
   ]);
 });
