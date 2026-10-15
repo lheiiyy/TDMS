@@ -119,4 +119,18 @@ const arc13 = (root) => {
   return v;
 };
 
-module.exports = { arc01, arc02, arc03, arc04, arc07, arc08, arc10, arc13, scanRepoForIds };
+// UI-API: only api.js (src/ui/shell/api.html) and the throwaway spike page folder (src/ui/spike/, removed at 0-010) may call google.script.run.
+// Every other UI file must go through api.js. The scan reads the raw text, so a stray quote in an HTML file cannot hide a call.
+const UI_SERVER_CALL_ALLOWED = [/^src\/ui\/shell\/api\.html$/, /^src\/ui\/spike\//];
+const uiServerCalls = (root) => {
+  const v = [];
+  for (const p of S.listFiles(path.join(root, 'src', 'ui'))) {
+    const rel = path.relative(root, p).split(path.sep).join('/');
+    if (UI_SERVER_CALL_ALLOWED.some((re) => re.test(rel))) continue;
+    const text = fs.readFileSync(p, 'utf8');
+    for (const h of S.findAll(text, /\bgoogle\.script\.run\b/)) v.push({ file: rel, line: S.lineOf(text, h.index), token: h.match, rule: 'UI-API' });
+  }
+  return v;
+};
+
+module.exports = { uiServerCalls, arc01, arc02, arc03, arc04, arc07, arc08, arc10, arc13, scanRepoForIds };

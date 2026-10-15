@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!-- THROWAWAY SPIKE PAGE (slice 0-006, spikes S-01 and S-05). Review at 0-010: remove it or re-gate it before any live push.
+     This page holds no data. The gate is in the server function spikeLoadModule. It is the only UI file, besides api.js,
+     allowed to call google.script.run (a test enforces that). -->
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TDMS spike</title>
+    <style>
+      body { font: 16px/1.4 system-ui, sans-serif; margin: 12px; }
+      h1 { font-size: 20px; }
+      h2 { font-size: 17px; margin-top: 20px; }
+      button { font-size: 16px; padding: 10px 14px; margin: 4px 4px 4px 0; }
+      pre { white-space: pre-wrap; word-break: break-word; background: #f2f2f2; padding: 8px; min-height: 3em; }
+    </style>
+  </head>
+  <body>
+    <h1>TDMS spike 0-006</h1>
+
+    <h2>S-01 lazy load</h2>
+    <p id="status-alpha">alpha not loaded</p>
+    <p id="status-beta">beta not loaded</p>
+    <button id="open-alpha" type="button">Open alpha</button>
+    <button id="open-beta" type="button">Open beta</button>
+    <div id="module-host"></div>
+
+    <h2>S-05 storage</h2>
+    <button id="check-storage" type="button">Check storage</button>
+    <button id="write-draft" type="button">Write draft</button>
+    <button id="read-draft" type="button">Read draft</button>
+    <button id="clear-draft" type="button">Clear draft</button>
+
+    <h2>Log</h2>
+    <pre id="log"></pre>
+
+    <script>
+      // Definitions only. Nothing runs at load except attaching the button handlers.
+      var TDMS = (window.TDMS = window.TDMS || { ui: {} });
+      TDMS.ui = TDMS.ui || {};
+
+      var spike = {
+        fetches: {},
+        loaded: {},
+        KEY: 'tdms-spike-draft',
+
+        log: function (text) {
+          var el = document.getElementById('log');
+          el.textContent = text + '\n' + el.textContent;
+        },
+
+        // S-01: fetch one module from the server once, then add its view, style and script and call init().
+        open: function (name) {
+          var t0 = performance.now();
+          if (spike.loaded[name]) {
+            spike.log(name + ' already loaded, fetches=' + spike.fetches[name]);
+            return;
+          }
+          google.script.run
+            .withSuccessHandler(function (r) { spike.show(name, r, t0); })
+            .withFailureHandler(function () { spike.log(name + ' fetch failed (transport)'); })
+            .spikeLoadModule(name);
+        },
+
+        show: function (name, r, t0) {
+          if (!r || !r.ok) {
+            spike.log(name + ' refused: ' + (r && r.code) + (r && r.reason ? ' ' + r.reason : '') + (r && r.error_kind ? ' ' + r.error_kind : ''));
+            return;
+          }
+          spike.fetches[name] = (spike.fetches[name] || 0) + 1;
+          var tpl = document.createElement('template');
+          tpl.innerHTML = r.html;
+          var scripts = Array.prototype.slice.call(tpl.content.querySelectorAll('script'));
+          var styles = Array.prototype.slice.call(tpl.content.querySelectorAll('style'));
+          scripts.concat(styles).forEach(function (n) { n.parentNode.removeChild(n); });
+          document.getElementById('module-host').appendChild(document.importNode(tpl.content, true));
+          styles.forEach(function (s) {
+            var el = document.createElement('style');
+            el.textContent = s.textContent;
+            document.head.appendChild(el);
+          });
+          var method = 'script tag';
+          scripts.forEach(function (s) {
+            var el = document.createElement('script');
+            el.textContent = s.textContent;
+            document.head.appendChild(el);
+          });
+          if (!TDMS.ui[name]) {
+            method = 'eval';
+            try {
+              scripts.forEach(function (s) { (new Function(s.textContent))(); });
+            } catch (e) {
+              method = 'none worked (' + e.name + ')';
+            }
+          }
+          var root = document.querySelector('[data-module="' + name + '"]');
+          var shown = false;
+          try {
+            if (TDMS.ui[name] && root) { TDMS.ui[name].init(root); shown = root.querySelector('.state').textContent === name + ' view shown'; }
+          } catch (e) {
+            spike.log(name + ' init failed (' + e.name + ')');
+          }
+          var badge = root && root.querySelector('.badge');
+          var styled = !!badge && getComputedStyle(badge).backgroundColor === 'rgb(200, 230, 201)';
+          var ms = Math.round(performance.now() - t0);
+          spike.loaded[name] = !!TDMS.ui[name] && shown;
+          document.getElementById('status-' + name).textContent = name + (spike.loaded[name] ? ' loaded' : ' not loaded');
+          spike.log(name + (spike.loaded[name] ? ' ready' : ' NOT ready') + ': ' + ms + ' ms, method=' + method + ', style=' + (styled ? 'yes' : 'no') + ', fetches=' + spike.fetches[name]);
+        },
+
+        // S-05: try localStorage and sessionStorage. Each use is wrapped in try/catch, as the real offline drafts must be.
+        probe: function (store) {
+          try {
+            var s = window[store];
+            s.setItem('tdms-spike-probe', '1');
+            var ok = s.getItem('tdms-spike-probe') === '1';
+            s.removeItem('tdms-spike-probe');
+            return ok ? 'ok' : 'unreadable';
+          } catch (e) {
+            return 'blocked(' + e.name + ')';
+          }
+        },
+
+        check: function () {
+          spike.log('storage: localStorage=' + spike.probe('localStorage') + ' sessionStorage=' + spike.probe('sessionStorage'));
+        },
+
+        write: function () {
+          var id = Math.random().toString(16).slice(2, 10);
+          var value = JSON.stringify({ id: id, note: 'spike draft, no data' });
+          var res = [];
+          ['localStorage', 'sessionStorage'].forEach(function (store) {
+            try { window[store].setItem(spike.KEY, value); res.push(store + '=stored'); } catch (e) { res.push(store + '=blocked(' + e.name + ')'); }
+          });
+          spike.log('draft stored: id=' + id + ' ' + res.join(' '));
+        },
+
+        readOne: function (store) {
+          try {
+            var raw = window[store].getItem(spike.KEY);
+            return raw ? 'found id=' + JSON.parse(raw).id : 'missing';
+          } catch (e) {
+            return 'blocked(' + e.name + ')';
+          }
+        },
+
+        read: function () {
+          spike.log('read: local=' + spike.readOne('localStorage') + ' | session=' + spike.readOne('sessionStorage'));
+        },
+
+        clear: function () {
+          ['localStorage', 'sessionStorage'].forEach(function (store) { try { window[store].removeItem(spike.KEY); } catch (e) { /* blocked: nothing to clear */ } });
+          spike.log('draft cleared');
+        },
+      };
+
+      document.getElementById('open-alpha').addEventListener('click', function () { spike.open('alpha'); });
+      document.getElementById('open-beta').addEventListener('click', function () { spike.open('beta'); });
+      document.getElementById('check-storage').addEventListener('click', spike.check);
+      document.getElementById('write-draft').addEventListener('click', spike.write);
+      document.getElementById('read-draft').addEventListener('click', spike.read);
+      document.getElementById('clear-draft').addEventListener('click', spike.clear);
+    </script>
+  </body>
+</html>

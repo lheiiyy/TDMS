@@ -1,0 +1,20 @@
+<!-- THROWAWAY SPIKE FIXTURE (slice 0-006, S-01). A module is a view fragment, a style block and a classic script in the TDMS.ui namespace. -->
+<div data-module="beta">
+  <p class="badge">beta view</p>
+  <p class="state">beta view not initialised</p>
+</div>
+<style>
+  [data-module="beta"] .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; background: rgb(200, 230, 201); }
+</style>
+<script>
+  (function () {
+    var T = (window.TDMS = window.TDMS || { ui: {} });
+    T.ui = T.ui || {};
+    // Only defines the module. Nothing runs until the shell calls init() when the module is opened.
+    T.ui.beta = {
+      init: function (root) {
+        root.querySelector('.state').textContent = 'beta view shown';
+      },
+    };
+  })();
+</script>
