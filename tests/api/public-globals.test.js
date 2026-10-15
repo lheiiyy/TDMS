@@ -13,13 +13,16 @@ function files(dir) {
   });
 }
 
-test('public globals: only doGet, tdmsApi and the four throwaway spike functions are callable from the browser', () => {
+// spikeLoadModule (slice 0-006, spike S-01) is public on purpose: the spike page must fetch a module from the server on demand, and a browser can
+// only call a public global. Justification: it is gated (the _meta marker must be 'test'), answers only to the allowlisted names alpha and beta,
+// and returns static fixture text. It is removed at 0-010; the real lazy-load transport is decided in slice 4-006 after the S-01 result.
+test('public globals: only doGet, tdmsApi and the five throwaway spike functions are callable from the browser', () => {
   const names = [];
   for (const f of files(path.join(__dirname, '..', '..', 'src'))) {
     for (const m of fs.readFileSync(f, 'utf8').matchAll(/^function\s+([A-Za-z0-9_$]+)\s*\(/gm)) names.push(m[1]);
   }
   const callable = names.filter((n) => !n.endsWith('_')).sort();
-  assert.deepEqual(callable, ['doGet', 'spikeGuard', 'spikeLockHold', 'spikeLockTry', 'spikeQuotas', 'tdmsApi']);
+  assert.deepEqual(callable, ['doGet', 'spikeGuard', 'spikeLoadModule', 'spikeLockHold', 'spikeLockTry', 'spikeQuotas', 'tdmsApi']);
 });
 
 test('public globals: the spike functions are listed for review at 0-010', () => {

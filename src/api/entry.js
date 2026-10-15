@@ -4,8 +4,10 @@
 // References to other files are made inside functions only, so file load order does not matter (ARC-10).
 const TDMS_BUILD = 'spike-0-005';
 
-function doGet() {
-  return HtmlService.createTemplateFromFile('ui/shell/index').evaluate()
+function doGet(e) {
+  // Spike hook (slice 0-006, removed at 0-010): only ?page=spike opens the spike page; the default is the shell.
+  const file = SpikePage.pick(e) === 'spike' ? 'ui/spike/index' : 'ui/shell/index';
+  return HtmlService.createTemplateFromFile(file).evaluate()
     .setTitle('TDMS')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }

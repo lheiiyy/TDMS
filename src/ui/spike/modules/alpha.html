@@ -1,0 +1,20 @@
+<!-- THROWAWAY SPIKE FIXTURE (slice 0-006, S-01). A module is a view fragment, a style block and a classic script in the TDMS.ui namespace. -->
+<div data-module="alpha">
+  <p class="badge">alpha view</p>
+  <p class="state">alpha view not initialised</p>
+</div>
+<style>
+  [data-module="alpha"] .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; background: rgb(200, 230, 201); }
+</style>
+<script>
+  (function () {
+    var T = (window.TDMS = window.TDMS || { ui: {} });
+    T.ui = T.ui || {};
+    // Only defines the module. Nothing runs until the shell calls init() when the module is opened.
+    T.ui.alpha = {
+      init: function (root) {
+        root.querySelector('.state').textContent = 'alpha view shown';
+      },
+    };
+  })();
+</script>
