@@ -26,3 +26,14 @@ test('meta: an unreadable spreadsheet throws (the caller maps it to a guard code
   const broken = { openById: () => { throw new Error('no access'); } };
   assert.throws(() => MetaRepository.readEnvironmentMarker('db', broken));
 });
+
+test('meta readMeta: tells a missing tab from a missing row or an empty value', () => {
+  assert.deepEqual(MetaRepository.readMeta('db', app([['key', 'value'], ['environment', 'test']])), { tabFound: true, marker: 'test' });
+  assert.deepEqual(MetaRepository.readMeta('db', app(null)), { tabFound: false, marker: null });
+  assert.deepEqual(MetaRepository.readMeta('db', app([['key', 'value']])), { tabFound: true, marker: null });
+  assert.deepEqual(MetaRepository.readMeta('db', app([['environment', '']])), { tabFound: true, marker: null });
+});
+
+test('meta readMeta: an unreadable spreadsheet throws', () => {
+  assert.throws(() => MetaRepository.readMeta('db', { openById: () => { throw new Error('no access'); } }));
+});
