@@ -59,7 +59,7 @@ TDMS users and audit columns use employee IDs (D024), not Google accounts, so hi
 
 ## 5. Verification (spike S-09, slice 0-011)
 
-Run on the **test** environment, moving it to a second Gmail. Leo must provide the second Gmail, and the "TDMS test" Apps Script project must already exist. For every [VERIFY] row, record: what worked, what did not, the exact steps used, and any change of ID or URL. Then replace "[VERIFY]" in this file with the result and the date.
+Run on the **test** environment, moving it to a second Gmail. The click-by-click steps and the per-check report lines are in [spikes/S-09](../spikes/S-09.md) (per-environment path plus a dummy folder; the whole mother-folder transfer stays [VERIFY] until a real move). Leo must provide the second Gmail, and the "TDMS test" Apps Script project must already exist. For every [VERIFY] row, record: what worked, what did not, the exact steps used, and any change of ID or URL. Then replace "[VERIFY]" in this file with the result and the date.
 
 ## 6. Not covered
 
