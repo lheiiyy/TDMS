@@ -10,7 +10,7 @@ const DB = ['1', 'Fake', 'Db', 'Id', '0123456789', 'abcdefghij'].join('');
 
 const mk = (env, marker, calls) => ({
   env: { read: () => ({ env, dbId: DB }) },
-  meta: { readEnvironmentMarker: () => { if (marker instanceof Error) throw marker; return marker; } },
+  meta: { readMeta: () => { if (marker instanceof Error) throw marker; return { tabFound: true, marker }; } },
   guard: EnvGuard,
   mail: { remainingDailyQuota: () => { if (calls) calls.push('mail'); return 87; } },
 });
@@ -35,18 +35,19 @@ test('spike guard: a missing or invalid ENV is reported by its guard code, and a
 });
 
 test('spike gate: refuses unless the sheet marker is test (dev, live, missing, unreadable)', () => {
-  for (const marker of ['dev', 'live', null, new Error('no access')]) {
-    assert.deepEqual(SpikeDiagnostics.guardReport(mk('test', marker)), { ok: false, code: 'SPIKE_DISABLED' });
+  const refused = (reason, error_kind) => Object.assign({ ok: false, code: 'SPIKE_DISABLED', reason }, error_kind ? { error_kind } : {});
+  for (const [marker, expected] of [['dev', refused('MARKER_NOT_TEST')], ['live', refused('MARKER_NOT_TEST')], [null, refused('MARKER_MISSING')], [new Error('no access'), refused('SHEET_UNREADABLE', 'OTHER')]]) {
+    assert.deepEqual(SpikeDiagnostics.guardReport(mk('test', marker)), expected);
   }
   const noDb = mk('test', 'test');
   noDb.env = { read: () => ({ env: 'test', dbId: undefined }) };
-  assert.deepEqual(SpikeDiagnostics.guardReport(noDb), { ok: false, code: 'SPIKE_DISABLED' });
+  assert.deepEqual(SpikeDiagnostics.guardReport(noDb), refused('NO_DB_ID'));
 });
 
 test('spike quota: returns the remaining daily mail quota only when the gate passes', () => {
   const calls = [];
   assert.deepEqual(SpikeDiagnostics.quotaReport(mk('test', 'test', calls)), { ok: true, mail_remaining_daily: 87 });
-  assert.deepEqual(SpikeDiagnostics.quotaReport(mk('live', 'live', calls)), { ok: false, code: 'SPIKE_DISABLED' });
+  assert.deepEqual(SpikeDiagnostics.quotaReport(mk('live', 'live', calls)), { ok: false, code: 'SPIKE_DISABLED', reason: 'MARKER_NOT_TEST' });
   assert.deepEqual(calls, ['mail']);
 });
 

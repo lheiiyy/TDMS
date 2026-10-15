@@ -7,7 +7,7 @@ const EnvGuard = require('../../src/core/envGuard');
 
 const gateDeps = (marker) => ({
   env: { read: () => ({ env: 'test', dbId: 'x' }) },
-  meta: { readEnvironmentMarker: () => marker },
+  meta: { readMeta: () => ({ tabFound: true, marker }) },
   guard: EnvGuard,
 });
 const mk = (opts) => {
@@ -65,8 +65,9 @@ test('lock probe: tryOnce does not wait and lets the lock go', () => {
 test('lock probe: refuses and never touches the lock unless the marker is test', () => {
   for (const marker of ['dev', 'live', null]) {
     const { d, log } = mk({ marker });
-    assert.deepEqual(SpikeLockProbe.hold(10, d), { ok: false, code: 'SPIKE_DISABLED' });
-    assert.deepEqual(SpikeLockProbe.tryOnce(d), { ok: false, code: 'SPIKE_DISABLED' });
+    const expected = { ok: false, code: 'SPIKE_DISABLED', reason: marker === null ? 'MARKER_MISSING' : 'MARKER_NOT_TEST' };
+    assert.deepEqual(SpikeLockProbe.hold(10, d), expected);
+    assert.deepEqual(SpikeLockProbe.tryOnce(d), expected);
     assert.deepEqual(log, []);
   }
 });

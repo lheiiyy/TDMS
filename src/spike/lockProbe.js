@@ -8,7 +8,8 @@ const SpikeLockProbe = (function () {
   // deps: { diagnostics: {gate}, gateDeps, lockService, sleep(ms) }
   // Holds the script lock for min(seconds, 10) seconds. Waits at most 1 second to get it.
   function hold(seconds, deps) {
-    if (!deps.diagnostics.gate(deps.gateDeps)) return deps.diagnostics.DISABLED;
+    const g = deps.diagnostics.gate(deps.gateDeps);
+    if (!g.ok) return deps.diagnostics.refusal(g);
     const s = Math.min(MAX_HOLD_SECONDS, Math.max(0, Number(seconds) || 0));
     const lock = deps.lockService.getScriptLock();
     if (!lock.tryLock(1000)) return { ok: true, acquired: false };
@@ -22,7 +23,8 @@ const SpikeLockProbe = (function () {
 
   // Tries the script lock once without waiting and lets it go at once.
   function tryOnce(deps) {
-    if (!deps.diagnostics.gate(deps.gateDeps)) return deps.diagnostics.DISABLED;
+    const g = deps.diagnostics.gate(deps.gateDeps);
+    if (!g.ok) return deps.diagnostics.refusal(g);
     const lock = deps.lockService.getScriptLock();
     const got = lock.tryLock(0);
     if (got) lock.releaseLock();
