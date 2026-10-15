@@ -166,6 +166,8 @@ Both are in the account's own Drive and not shared. Claude gave you the IDs in c
 
 ### Before any real data
 
+- **Live keeps `oauthScopes: []` until slice 0-010.** The current `src/appsscript.json` carries two spike-only scopes (slice 0-005). Do not paste it into the live project; keep the live manifest as created in step 3 above, with no OAuth scopes, and never push live.
+
 - Turn on 2-step verification on the account.
 - Backup editor (gate G-08): named on 2026-10-08, recorded in DECISION-GATE G-08 (address confirmed by Leo, 2026-10-09), **not shared yet**. Leo shares by hand, only the `TDMS-live` folder and the "TDMS live" Apps Script project (never the mother folder, D070), and turns on 2-step verification on both accounts. G-08 stays open until that is done, and must be closed **before the first real data import**.
 - Limit or disable the Claude Drive/Sheets connectors for this account, or move live to an account without them (gate G-09), **before real employee data enters live**.
