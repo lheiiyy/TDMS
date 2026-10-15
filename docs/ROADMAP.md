@@ -110,7 +110,7 @@ PH-0 ─ PH-1 ─ PH-2 ─ PH-3 ─ PH-4 ─ PH-5 ─ PH-6 ─ PH-7 ─ PH-8
 | **0-001** | **G-04** | Approve or amend the repository layout and deploy flow (ARCHITECTURE §0.3, §16.4) |
 | **0-002** | **G-01** | Google account that owns the scripts, sheets and Drive. Answered 2026-10-08: personal Gmail for all environments (D069). Backup editor named, not shared yet (G-08 open until sharing and 2-step verification are done) |
 | **0-002**, 1-001 | **G-03** | Organisation time zone |
-| 0-005 | AO-02 / S-06 | Confirm the account may run a web app as owner with "Anyone" access |
+| 0-005 | AO-02 / S-06 | Confirm the account may run a web app as owner with "Anyone" access. **Confirmed 2026-10-15** on the test project: Anyone is offered and the page loads without sign-in (spike S-06 report) |
 | 2-001 | **G-05** | Approve DATA-MODEL and the history design (PROP-004) |
 | 3-002 | CD-38 | Approve the bundle-version stamp (PROP-006) |
 | 4-005 | CD-01 | Company email address that sends reset links |
