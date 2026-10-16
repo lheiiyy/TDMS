@@ -33,6 +33,26 @@ DOCUMENTATION:      (files to update; PROJECT-STATE always)
 OPEN ISSUES BLOCKING: (ISS-ids; must be empty to start)
 ```
 
+## 3A. Slice plan (written by the builder at the start of a slice)
+
+One ROADMAP row is one slice (R-05); the parts named in its task text are its tasks. The packet (the row and the documents it cites) is the input, so the plan refers to it and does not repeat it. Leo's OK on this plan covers the whole slice (see CLAUDE.md, Batch approval per slice).
+
+```
+SLICE PLAN:    <slice ID> <title>
+SLICE:         type, size, depends (all merged?), blocked by (must be empty, R-09), documents cited
+TASKS:         in order (R-02). For each: files to add or change, tests (TEST-ids or family), commit message (task ID, RULE/PERM ids)
+ACCEPTANCE:    the ROADMAP acceptance criteria this slice must meet and how each is verified (test id or manual check)
+COMMITS/PRs:   the expected commits (one per milestone) and PRs; where a slice is split into PRs, where and why (stop after each PR until Leo merges it)
+NEEDS SEPARATE OK: which of these this slice touches, or "none expected": schema change beyond the packet; scoring or calculation rule; permission or scope change; security impact; cross-module change; anything touching LIVE; a decision listed in DECISION-GATE; a push or deploy to an Apps Script project
+DECISIONS:     BLOCKED — REASON — DECISION REQUIRED items, and at most 3 questions with a recommended answer
+RISKS:         and rollback
+DOCS:          PROJECT-STATE and CHANGELOG, and any other file named
+```
+
+**Scope change.** A task added or dropped; a file in another module or layer, or config, schema, permissions or manifest; a new dependency; a change to API, schema, permission or calculation. The builder stops, says what changed and why, writes the amended plan (only the differences), and continues after Leo's OK. A small deviation inside a task (for example one more test case or fixture in the same folder) is not a scope change; it goes in the end report.
+
+**End of slice.** A report of at most 10 lines: slice ID, PR link(s), files changed, commits, `npm test` result, deviations from the plan, open issues, next slice.
+
 ## 4. Stop rule
 
 Claude Code stops and reports `BLOCKED — REASON — DECISION REQUIRED` on: missing or conflicting rule, unclear data owner, undefined permission or scope, schema change beyond the packet, possible history corruption, security impact, cross-module change, unclear calculation or source of truth. It does not guess and does not widen scope.
@@ -43,7 +63,7 @@ Implementation complete · relevant tests pass · server-side authorization veri
 
 ## 6. Commit and review
 
-- One commit per slice milestone; message cites task ID and RULE/PERM ids.
+- One commit per slice milestone; the milestones are listed in the approved slice plan (§3A); message cites task ID and RULE/PERM ids.
 - Review checklist for Claude Work: scope respected; no hardcoded configurable value; no name used as key; every read scope-filtered; audit written; historical protection kept; tests map to TEST-ids; docs consistent.
 
 ## 7. Repository layout (proposal, ISS-P0-01)
