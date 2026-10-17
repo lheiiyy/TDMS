@@ -104,10 +104,10 @@ A due date or expiry date is stored when it is created. Changing a setting or ad
 
 | Class | Count | Notes |
 | --- | --- | --- |
-| CONFIGURABLE | 52 settings (CFG-010 counted as five) | 12 have a value still pending (CFG-007, 008 (who), 013, 018, 019, 050, 051, 052, 060 (three targets), 061, 062, 107); CFG-063 is conditional on IT approval |
+| CONFIGURABLE | 53 settings (CFG-010 counted as five; CFG-011 moved here on 2026-10-17) | 12 have a value still pending (CFG-007, 008 (who), 013, 018, 019, 050, 051, 052, 060 (three targets), 061, 062, 107); CFG-063 is conditional on IT approval |
 | FIXED | 31 rules (FX-001–031), covering CFG-005, 006, 031, 076, 085, 103 | Section 2.1 |
 | SYSTEM | 11 items (SY-001–011) | Section 2.2 |
-| DECISION | 15 settings (CFG-011, 032, 036, 038, 047, 054, 083, 084, 090, 091, 093, 094, 104, 105, 106); 39 open decisions CD-01–39 | Section 3 |
+| DECISION | 14 settings (CFG-032, 036, 038, 047, 054, 083, 084, 090, 091, 093, 094, 104, 105, 106); 38 open decisions (CD-01–39; CD-03 answered 2026-10-17) | Section 3 |
 
 Counts verified against the tables by search.
 
@@ -139,6 +139,7 @@ Columns: ID · Setting (name — description) · Type · Validation / allowed va
 | CFG-010.3 | **Locations / stores** — name, brand, region, type (CFG-011), visit frequency (CFG-017), status | list | name unique per brand; type from CFG-011; frequency from CFG-017 | none; seeded from HR masterlist | L | A; M Sr | A1 | N0; a frequency change affects future compliance only (see CFG-017) | H2 (WF-011 deactivation) |
 | CFG-010.4 | **Positions** — name, level (staff / manager), requires HO tech val | list | unique; level drives default pass mark (D054) | none; seeded | L | A; M Sr | A1 | N2 for timeline effect (enrolled trainees keep their stamp) | H2 |
 | CFG-010.5 | **Stations** — name, certification required, brand scope | list | unique; validity set in CFG-050 | none; seeded | L | A; M Sr | A1 | N0 | H2 |
+| CFG-011 | **Location types** — lookup category `location_type` (ENT-003); only Store has behaviour (D045) | list | unique; **Store is a SYSTEM item** (not renamed or disabled); a new type counts nowhere in visits, coverage or Store Health; deactivate, never delete | Store, Commissary, Office, Call Center, Warehouse | L | A | A1 | N0 | H2 |
 | CFG-012 | **Visit purposes** — reasons for a store visit | list | unique; TLTC and CAPAR Verification are SYSTEM items (not renamed or disabled); a new purpose needs a Store Health score before use (CD-33) | Store Visit, TLTC, Curing/Support, CAPAR Verification | L | A | A1 | N0 | H2 |
 | CFG-013 | **Audit / failure type** — one shared list used by CAPAR and visit failures (D010) | list | unique; used in the CAPAR duplicate key, so never repurposed (R9) | **REQUIRES DECISION** — prototype has 4 audit + 3 failure types, merge to be confirmed (CD-04) | L | A | A1 | N0 | H2 |
 | CFG-014 | **Employee statuses** | list | Active and Deactivated are SYSTEM items | Active, Deactivated | L | A | A1 | N0 | H2 |
@@ -279,7 +280,7 @@ These are not business settings. They change only by a release, with a decision 
 
 # Section 3 — REMAINING DECISIONS
 
-Everything here is open. "Recommended" is a suggestion only; none is approved. Nothing is built or defaulted until decided (R14).
+Everything here is open, except the row marked ANSWERED. "Recommended" is a suggestion only; none is approved. Nothing is built or defaulted until decided (R14).
 
 ## 3.1 Value and definition decisions
 
@@ -287,7 +288,7 @@ Everything here is open. "Recommended" is a suggestion only; none is approved. N
 | --- | --- | --- | --- | --- | --- |
 | CD-01 | CFG-007 | Account used to send. Interim answer 2026-10-08 (D069): the script-owning personal Gmail `lheii.fcsitraining@gmail.com`; confirm the final sender before real use | D069, ISS-P0-04 | Auth, CAPAR | Leo confirms the final sender |
 | CD-02 | CFG-008 | Who edits the permission matrix; whether Admin sits above Senior | ISS-P0-06, AMB-01 | Authorization | Admin edits, audited, last-admin guard |
-| CD-03 | CFG-011 | May the location type set grow? Only "Store" has behaviour | ISS-P2-01 | Master data | Keep five types fixed |
+| CD-03 | CFG-011 | **ANSWERED 2026-10-17 (G-05, D072):** the location type set may grow, as a lookup Admin can extend; Store is a system value that cannot be disabled; only Store counts in visits, coverage and Store Health | ISS-P2-01 | — | — |
 | CD-04 | CFG-013 | The merged audit/failure type list values | D010 | CAPAR | Leo supplies the list |
 | CD-05 | CFG-014 | Whether any employee status beyond the two system ones is approved | Audit §E | Person | Keep only the two |
 | CD-06 | CFG-018 | TL quit reason values | D068, ISS-P1-04 | TL | Leo supplies the list |

@@ -8,7 +8,7 @@ Status: all **OPEN** unless stated. "Needs" = who/what resolves it. Class tags a
 | ID | Issue | Why it matters | Evidence | Proposed resolution (not approved) | Blocks |
 | --- | --- | --- | --- | --- | --- |
 | ISS-P0-01 | Repo structure, branching and dev/test/live separation are not yet defined as files. Handover D47 requires separate dev spreadsheet and Drive; nothing names the repo layout, `clasp` use or deploy flow | Every later slice depends on it | D047, §2 | Define in ARCHITECTURE.md; Leo approves | Phase 0 |
-| ISS-P0-02 | **Three overlapping history mechanisms** (audit log, status history, record history) with no single design | Historical integrity (RULE-144 family); cell-size and row-growth risk | DATA-MODEL §3, PROP-004 | Adopt the three-tier design in PROP-004 | Data layer, audit |
+| ISS-P0-02 | **Three overlapping history mechanisms** (audit log, status history, record history) with no single design | Historical integrity (RULE-144 family); cell-size and row-growth risk | DATA-MODEL §3, PROP-004 | **Answered 2026-10-17 (G-05, D072):** the three-tier design in PROP-004 is approved | Data layer, audit |
 | ISS-P0-03 | Session storage choice (CacheService vs sheet) open | Security; 6-minute limit; cache eviction logs users out | DATA-MODEL ENT-030, Roles spec §8 | Hashed token in a `sessions` sheet + cache read-through | Auth |
 | ISS-P0-04 | Email sender/hosting account not named; the Roles spec uses a personal Gmail while D012 requires a company account | Reset emails, QA PDFs, ownership of the script | D012, CFG-007 | Answered 2026-10-08 (D069): personal Gmail `lheii.fcsitraining@gmail.com`, all environments, interim | Auth, CAPAR |
 | ISS-P0-05 | Store Head / Area Manager: Handover §9 lists their **accounts as v2** (D2) while §3 and the master instruction list them among the 7 roles, and Handover §11 asks whether they are live in v1. Their "views and acknowledges" has no record, action or workflow; the Roles spec has 5 role columns | Permission matrix is provisional for two roles | PERMISSIONS CON-07 | Define the acknowledgement entity or drop it from v1 | Permissions, Store Visit |
@@ -54,7 +54,7 @@ Status: all **OPEN** unless stated. "Needs" = who/what resolves it. Class tags a
 
 | ID | Issue | Note |
 | --- | --- | --- |
-| ISS-P2-01 | Location type set may grow? (CFG-011) | Only "Store" has behaviour |
+| ISS-P2-01 | Location type set may grow? (CFG-011) | Only "Store" has behaviour. **Answered 2026-10-17 (D072):** yes, as a lookup Admin can extend; Store is a system value that cannot be disabled |
 | ISS-P2-02 | Orientation length configurable? (CFG-032) | |
 | ISS-P2-03 | Memo templates mechanism (D051 pending) | |
 | ISS-P2-04 | Screen count 22 vs 23 | Inventory counts 23 |
@@ -69,6 +69,6 @@ Status: all **OPEN** unless stated. "Needs" = who/what resolves it. Class tags a
 | PROP-001 | Visit plan and visit log as two linked entities | DATA-MODEL ENT-080/081 | Models D061 and §7.5 consistently (ISS-P1-06) |
 | PROP-002 | `Cancelled` plan status | WORKFLOWS WF-003 | D068 wording ("cancelled") |
 | PROP-003 | Transient "Closing" state for month close | WORKFLOWS WF-006 | Snapshot job can exceed one script run |
-| PROP-004 | One audit mechanism with three views (audit log, field history, status history) | DATA-MODEL §3 | §7.5, §7.6, §7.10, D023, D048 overlap (ISS-P0-02, gate G-05) |
+| PROP-004 | **APPROVED 2026-10-17.** One audit mechanism with three views (audit log, field history, status history) | DATA-MODEL §3 | §7.5, §7.6, §7.10, D023, D048 overlap (ISS-P0-02, gate G-05) |
 | PROP-005 | **APPROVED 2026-10-08.** Store Health engine before CAPAR data (phase order) | ROADMAP §3 | §10 phase 2 reads phase 3 data |
 | PROP-006 | **APPROVED 2026-10-08.** Bundle version stamp: results reference one bundle version of the settings used | CONFIGURATION Part 2, DATA-MODEL §15 | Meets the rule "store the applicable rule/version with the result" with one reference (CD-38) |
