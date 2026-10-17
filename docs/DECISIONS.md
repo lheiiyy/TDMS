@@ -76,6 +76,7 @@ Not approved items (draft proposals, open questions) are **not** here: see [ISSU
 | D070 | Drive layout: one mother folder `TDMS` in the Drive root of the D069 account, holding `TDMS-dev`, `TDMS-test`, `TDMS-live` (each with its own database sheet `TDMS-<env>-DB`) and `_apps-script` (reserved for the Apps Script projects, moved there by hand). `DRIVE_ROOT_ID` is an environment subfolder, never the mother. The mother folder is never shared; only an environment subfolder is shared | Extends D069. Decider: Leo, 2026-10-08. Moving the folders kept every ID. See [dev-environment runbook](runbooks/dev-environment.md) and [account-transfer](runbooks/account-transfer.md) |
 | D071 | Batch approval per slice: one approved plan covers one whole ROADMAP row, then the builder works through its tasks without asking again | Decider: Leo, 2026-10-16. Working rule: [CLAUDE.md](../CLAUDE.md) (Batch approval per slice) and [HANDOFF-MODEL §3A](HANDOFF-MODEL.md). Context, decision and consequences below. Supersedes the earlier habit of one OK per step; no earlier decision is replaced |
 | D072 | Gate G-05: DATA-MODEL and the history design (PROP-004) approved, with seven decisions | Decider: Leo, 2026-10-17. Context, decision and consequences below. Resolves ISS-P0-02, DATA-MODEL M1 and M4, CD-03 (ISS-P2-01); replaces the INFERRED line in ENT-114. No earlier D-decision is reopened (D031 and D067 are kept) |
+| D073 | Builder merges on Leo's word: the builder may merge a PR only when Leo says so in the session, naming the PR | Decider: Leo, 2026-10-17. Working rule: [CLAUDE.md](../CLAUDE.md) (Working with Leo, Batch approval per slice). Context, decision and consequences below. Narrows the "never merge" line of D071; nothing else in D071 changes |
 
 ## D071 · Batch approval per slice (2026-10-16, Leo)
 
@@ -104,11 +105,21 @@ Not approved items (draft proposals, open questions) are **not** here: see [ISSU
 
 **Consequences.** DATA-MODEL, DECISION-GATE, ISSUE-REGISTER (ISS-P0-02, PROP-004, ISS-P2-01), ARCHITECTURE (AO-07), ROADMAP (2-001 and 2-005 no longer blocked by G-05; 7-002 no longer blocked by CD-03) and CONFIGURATION (CFG-011, CD-03, counts) are updated. A second change, made after this one is merged, applies decision 7 to WORKFLOWS (WF-004, WF-007, WF-008), PERMISSIONS, API-CONTRACT and the ROADMAP (a new slice for the ApprovalService core before 5-004; the screens stay in PH-16). §7.10 is read as history-bearing tables because DATA-MODEL §3 itself left the point open; the Handover text is not in this repository.
 
+## D073 · Builder merges on Leo's word (2026-10-17, Leo)
+
+**Context.** Leo reviews every PR but merging by hand slowed the work, and twice a merge reported as done had not happened. D071 said the builder never merges.
+
+**Decision.** The builder may merge a PR only when Leo explicitly says so in the session and names the PR (for example "OK i-merge #N"). Before merging, CI is green and the PR is mergeable. The merge is a merge commit (not squash), the branch is deleted, `main` is pulled, and the merge commit hash is reported. Without that message the builder never merges.
+
+**What does not change.** Leo approves every plan; the stop rule; the separate-OK list of D071; LIVE deploy stays manual. The builder never pushes to `main` directly, and never merges a PR that touches the LIVE deploy or the live manifest without a dated backup.
+
+**Consequences.** A general "go ahead" or an approved plan is not a merge order. A merge order covers only the PR it names. CLAUDE.md carries the working rule; this entry is the reason.
+
 ## Not in force (not approved; kept out of the record)
 D019 visit "Next action" (on hold) · D051 training memo (proposed) · Audit W14 Admin loses approval rights · "Other activity" log · single employee profile hub.
 
 ## Rules for this file
-New decisions continue from D073. Record the date, the decider and the superseded ID. A decision is reopened only by explicit request, a documented contradiction, a technical blocker, or a later decision; the reason is recorded first.
+New decisions continue from D074. Record the date, the decider and the superseded ID. A decision is reopened only by explicit request, a documented contradiction, a technical blocker, or a later decision; the reason is recorded first.
 
 ## Older sources superseded by approved decisions (traceability)
 Several purposes per visit → D017 · Plan §6 risk formula → D029 · 5 roles → Handover §3 (7 roles) · Employee ID `EMP-000000` → D024, D049 · Roles-spec "certify = approve" → D067 · Roles-spec promotion Manager/Senior → D031 · Trainee page 14-day/4 equal parts/pass 85 → D043, D052, D054, D055 · repo `TddProjectai/TDMS_Project` and SVMI schema base → D041 · calendar-only planning (D018) → D061.

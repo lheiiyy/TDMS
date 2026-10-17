@@ -8,7 +8,7 @@ Map: STATUS = `docs/PROJECT-STATE.md` · PLAN = `docs/ROADMAP.md` · adr = `docs
 
 - Leo owns the project and approves every structural change, scoring rule and deploy. Plan -> Leo's OK (one per slice, see Batch approval) -> build -> Leo reviews every PR -> deploy.
 - Reply in Taglish. Write docs, specs and UI text in plain formal English.
-- Leo is learning Git: create the branch, commit and open the PR for him, and explain in one line what changed. Never push to `main`.
+- Leo is learning Git: create the branch, commit and open the PR for him, and explain in one line what changed. Never push to `main`. Merge a PR only when Leo says so in the session, naming the PR (D073, see Batch approval per slice).
 - Never write to a live legacy sheet (SVMI, TL Monitoring, CAPAR, PMS). Import from copies.
 - Never commit credentials, tokens, `.clasp.json`, or spreadsheet/Drive/script IDs.
 - Deploy to live only when Leo says so, after a dated live backup (`node tools/deploy.js live --live --backup-date yyyy-mm-dd`; the date is a reminder, not proof of a backup).
@@ -19,9 +19,10 @@ Map: STATUS = `docs/PROJECT-STATE.md` · PLAN = `docs/ROADMAP.md` · adr = `docs
 One approved plan covers one whole slice: a single ROADMAP row (`<phase>-<nnn>`, one task packet, ROADMAP R-05) with every part named in its task text. Slices are never grouped unless Leo asks. A task that is not a ROADMAP row (a fix, a docs task, a spike follow-up) is its own slice and needs its own plan and OK.
 
 - At the start of a slice, write the plan with the template in `docs/HANDOFF-MODEL.md` §3A and wait for Leo's OK. After the OK, do the slice's tasks in order, with the planned commits and PRs, and do not ask again. A slice whose "Blocked by" item is open is not planned: report `BLOCKED — REASON — DECISION REQUIRED`.
-- Inside a slice nothing else changes: Leo reviews every PR; never merge; never push to `main`; the stop rule applies, and any BLOCKED item stops the slice.
+- Inside a slice nothing else changes: Leo reviews every PR; never merge without Leo's explicit word naming the PR (D073); never push to `main`; the stop rule applies, and any BLOCKED item stops the slice.
 - Needs a separate OK from Leo, at the time, even inside an approved slice: a schema change beyond the packet; a scoring or calculation rule; a permission or scope change; security impact; a cross-module change; anything touching LIVE; any decision listed in `docs/DECISION-GATE.md`; any push or deploy to an Apps Script project.
 - Scope change (a task added or dropped; a file in another module or layer, or config, schema, permissions or manifest; a new dependency; a change to API, schema, permission or calculation): stop, say what changed and why, re-plan, and continue only after Leo's OK. Commits already made stay on the branch.
+- Builder merges on Leo's word (D073): merge a PR only after Leo writes in the session, naming the PR (e.g. "OK i-merge #N"). Then: CI green and PR mergeable; merge commit (not squash); delete the branch; pull `main`; report the merge commit hash. Never merge without that message. Never merge a PR touching the LIVE deploy or the live manifest without a dated backup. Never push to `main` directly. A general OK or an approved plan is not a merge order.
 - Where the plan splits a slice into several PRs, stop after each PR until Leo merges it, then branch the next from updated `main`. No stacked PRs.
 - End of slice: report in at most 10 lines (slice ID, PR link(s), files changed, commits, `npm test` result, deviations from the plan, open issues, next slice). `docs/PROJECT-STATE.md` and `docs/CHANGELOG.md` are updated inside the slice.
 
