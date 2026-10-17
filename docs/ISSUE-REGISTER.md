@@ -62,6 +62,7 @@ Status: all **OPEN** unless stated. "Needs" = who/what resolves it. Class tags a
 | ISS-P2-06 | Legacy sheets and screenshots not reviewed | Inventory coverage gap |
 | ISS-P2-07 | Prototype ranges for settings (e.g. tlPassMark 1–100) are not approved | CONFIGURATION §1 |
 | ISS-P2-08 | AI helper provider fallback and cost cap | D065 |
+| ISS-P2-09 | A pending `approval_requests` row whose delegation is cancelled has no matching status (statuses are pending / approved / rejected only). Linked to slice 5-009 (ApprovalService core). **Proposal, NOT approved:** add `withdrawn` to `approval_requests`. Until decided, WF-007 keeps the † inference that the request leaves the approver inbox | D072; ENT-114; WF-007 |
 
 ## Appendix: design proposals (NOT approved; moved here from DECISIONS.md)
 | ID | Proposal | Where used | Why |
