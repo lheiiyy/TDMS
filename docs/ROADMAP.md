@@ -312,8 +312,8 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | **Phase ID** | PH-5 |
 | **Objective** | One server-side permission system: roles, scope, delegation and FLAG-001 enforced in the pipeline and in every read |
 | **Prerequisites** | PH-4; G-06 only for the matrix-editor slice |
-| **Modules** | PermissionService, DelegationService, UserService |
-| **Database work** | `role_permissions` (VER), `user_brands`, `user_locations`, `delegations`; users: role and FLAG-001 |
+| **Modules** | PermissionService, ApprovalService (core), DelegationService, UserService |
+| **Database work** | `role_permissions` (VER), `user_brands`, `user_locations`, `approval_requests` (D072), `delegations`; users: role and FLAG-001 |
 | **Backend work** | Seed the matrix from PERMISSIONS (⛔ cells as deny); `can(ctx, PERM, resource)`; scope specs; deny-by-default registry enforcement; delegation effective roles read live; users administration with guards |
 | **Frontend work** | Navigation built from `auth.me` capabilities; "Acting as" banner; delegation and Users screens |
 | **Tests** | TEST-PERM generated from the matrix (every PERM × role × scope, including deny cells), API-004, 005, 019 |
@@ -327,11 +327,12 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | 5-001 | S | Implement the `role_permissions` seed (PERMISSIONS Appendix A and §8; ⛔ cells deny) and `PermissionService.can` with epoch cache and short TTL + generated TEST-PERM matrix tests | 4-003 | — | TEST-PERM | L |
 | 5-002 | S | Implement the scope engine (`user_brands`, `user_locations`, scope spec builder, mandatory scope on repository reads, `NOT_FOUND` vs `NOT_IN_SCOPE`) + tests | 5-001 | — | TEST-PERM, API | L |
 | 5-003 | S | Implement pipeline step 6 (registry-driven authorization, record-state hook interface for edit window CFG-004 and month lock) and activate ARC-06/12 + tests | 5-002 | — | API, TEST-PERM | M |
-| 5-004 | S | Implement DelegationService (request, approval chain, cancel, end, effective roles from dates, no self-approval, no re-delegation, epoch bump) + `delegation.*` + tests | 5-003 | AMB-14, CD-24 | TEST-PERM, API | L |
+| 5-004 | S | Implement DelegationService (request through ApprovalService kind DELEGATION, approval chain, cancel, end, effective roles from dates, no self-approval, no re-delegation, epoch bump) + `delegation.*` + tests | 5-003, 5-009 | AMB-14, CD-24 | TEST-PERM, API | L |
 | 5-005 | S | Implement FLAG-001 (user flag, PERM-117, at-least-one-holder guard, context flag, not delegable) + `users.setExecomFlag` + tests | 5-003 | — | TEST-PERM | S |
 | 5-006 | S | Implement users administration (`users.*`: create with one-time temporary password, update, brands, reset password, clear cooldown, deactivate/reactivate ending sessions, no self-role-change, last-Admin guard) + tests | 5-003, 4-004 | AMB-15 (deactivate) | TEST-PERM, AUTH | L |
 | 5-007 | S | Implement the permission-matrix editor backend (`perms.matrix.get/set`, VER, reason, last-Admin lockout guard, cache invalidation) + tests | 5-003 | **G-06** | TEST-PERM | M |
-| 5-008 | U | Build navigation from capabilities, the "Acting as" banner, delegation request/approve/end screens and the Users administration screens; phone layout | 5-004 to 5-006 | — | TEST-PERM, UI smoke | L |
+| 5-008 | U | Build navigation from capabilities, the "Acting as" banner, delegation request/approve/end screens and the Users administration screens; phone layout | 5-004 to 5-006, 5-009 | — | TEST-PERM, UI smoke | L |
+| 5-009 | S | Implement the ApprovalService core (D072): provision `approval_requests` (kinds DELEGATION, EMPLOYEE_DEACTIVATION, CAPAR_CLOSURE; pending/approved/rejected), create, decide and approver inbox (PERM-100), the `status_history` row on approval, the self-approval guard (AR-15) with the CAPAR closure exception + `approvals.list/get/decide` + tests. Built before 5-004; the screens stay in PH-16 | 5-003, 2-005 | — | TEST-PERM, API | M |
 
 ---
 
@@ -418,7 +419,7 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | 8-002 | S | Implement employees and assignments (digits-only HR number as text, status list, field history F, `employees.list/get/create/update`) + permissions + validation + API + tests | 8-001 | AMB-04 | EMP, TEST-PERM | L |
 | 8-003 | J | Implement the TDD team import (persons, employees, users with one-time temporary passwords) through the import engine + dry-run tests | 8-002, 5-006 | G-07 | EMP | M |
 | 8-004 | J | Implement the one-time HR masterlist import (match by number then name + store with review, `legacy_ref`, backup before commit) + dry-run on synthetic data and masked sample | 8-002, 7-005 | G-07 | EMP | L |
-| 8-005 | S | Implement WF-008 and WF-012 (deactivation request, Admin decision, queue hook, reactivation, sessions and delegations ended for users) + tests | 8-002, 6-004 | AMB-15 | EMP, ADMIN | L |
+| 8-005 | S | Implement WF-008 and WF-012 (deactivation request as an approval_requests row of kind EMPLOYEE_DEACTIVATION, Admin decision, queue hook, reactivation, sessions and delegations ended for users) + tests | 8-002, 6-004, 5-009 | AMB-15 | EMP, ADMIN | L |
 | 8-006 | U | Build the employee list and profile, match prompts, deactivation request/approval and HR import review screens | 8-001 to 8-005 | — | UI smoke | L |
 | 8-007 | T | Foundation exit: run the full regression on test with a synthetic foundation data set, update PROJECT-STATE, tag `schema-foundation`, review the parking lot | 8-006 | — | all so far | S |
 
@@ -484,7 +485,7 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | 10-003 | S | Implement case open/get/list (duplicate block, QA report file required, assignment) + permissions PERM-020 + validation + API + tests | 10-002, 6-005 | CD-04 | CAPAR, TEST-PERM | L |
 | 10-004 | S | Implement finding blocks and corrective actions (report's own numbering, a/b/c inside one block, `ai_drafted` flag) and photos (limits from CFG-062) + permissions PERM-025 + API + tests | 10-003 | ISS-P1-15, M4 | CAPAR | L |
 | 10-005 | S | Implement `capar.schedule` and `capar.markVerified` with the verification visit created or linked, once only, for the marking officer + permissions + API + tests | 10-003, 9-004 | AMB-05, ISS-P1-19 | CAPAR, VISIT, TEST-PERM | L |
-| 10-006 | J | Implement the CAPAR PDF (photos under findings) and the QA email job, send date and `sent_to_email` stamp; `recordEndorsement` and `close` rules | 10-004, 10-005, 2-008 | ISS-P1-01, CD-16, CD-07 | CAPAR, REPORT | L |
+| 10-006 | J | Implement the CAPAR PDF (photos under findings) and the QA email job, send date and `sent_to_email` stamp; `recordEndorsement` and `close` rules (closure is the approval of kind CAPAR_CLOSURE, with the D072 exception) | 10-004, 10-005, 2-008, 5-009 | ISS-P1-01, CD-16, CD-07 | CAPAR, REPORT | L |
 | 10-007 | S | Implement overdue monitoring, reassignment-queue adapter (WF-013) and digest hooks for CAPAR | 10-006, 6-004 | — | CAPAR | M |
 | 10-008 | J | Wire CAPAR failures into Store Health (replace the parameter source; PROP-005) and run the parity tests with real cases | 10-003, 9-006 | ISS-P1-07 | RISK, CAPAR | M |
 | 10-009 | J | **On hold:** implement the AI checklist draft (provider/model settings, key in Script Properties, flagged output, call log) | 10-004 | ISS-P0-18, CD-29 | CAPAR | L |
@@ -655,8 +656,8 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | **Phase ID** | PH-16 |
 | **Objective** | One report registry over the authoritative records, the exports, the dashboards, notifications and the daily digest |
 | **Prerequisites** | PH-9 to PH-15; AO-04; CD-21 for the digest |
-| **Modules** | ReportService, NotificationService, ApprovalService (aggregate queue) |
-| **Database work** | `notifications`, `email_log`, report registry data, `approval_requests` |
+| **Modules** | ReportService, NotificationService, ApprovalService (inbox views only; the core is 5-009) |
+| **Database work** | `notifications`, `email_log`, report registry data |
 | **Backend work** | Report registry and three read modes (live, summary, frozen) with "as of" from status history and settings versions; training/trainee/certification, visit/CAPAR/Store Health/KPI and historical reports; export engine (print HTML, PDF, spreadsheet download, exports purge); notifications from the WORKFLOWS §9 set; digest job; role dashboards from summary tables; approvals queue |
 | **Frontend work** | Reports, export, notification centre, digest preferences, dashboards, approvals queue |
 | **Tests** | REPORT, JOB, TEST-PERM |
@@ -673,7 +674,7 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | 16-004 | S | Implement the historical and closed-month reports from snapshots and status history + tests (closed months never recomputed) | 16-001, 15-006 | — | REPORT, CLOSE | M |
 | 16-005 | J | Implement the export engine (print HTML, PDF jobs, spreadsheet download, private exports folder with purge job) | 16-001, 6-005 | AO-04 | REPORT | L |
 | 16-006 | S | Implement NotificationService (WORKFLOWS §9 events, `notifications.list/markRead`, email log) and the daily digest job (time and opt-out settings; `CONFIG_MISSING` until set) | 16-001, 2-008 | CD-21 | REPORT, JOB | L |
-| 16-007 | S | Implement role dashboards from summary tables (counts of unassigned/overdue expiry tasks, overdue CAPAR, deadlines) with `as_of` and the approvals aggregate queue | 16-006 | — | REPORT, TEST-PERM | M |
+| 16-007 | S | Implement role dashboards from summary tables (counts of unassigned/overdue expiry tasks, overdue CAPAR, deadlines) with `as_of` and the approvals aggregate queue read from ApprovalService (5-009) | 16-006 | — | REPORT, TEST-PERM | M |
 | 16-008 | U | Build the reports, export, notification centre, digest preference, dashboard and approvals queue screens | 16-002 to 16-007 | — | REPORT, UI smoke | L |
 
 ---
