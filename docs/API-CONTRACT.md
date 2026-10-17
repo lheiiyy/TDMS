@@ -439,8 +439,8 @@ Conventions: **K** = kind (R/W/J/F). **Conc** = `rv` (row_version), `sup` (super
 | `notifications.list` | R | own | — | Cursor paging |
 | `notifications.markRead` | W | own | — | none |
 | `digest.preferences.get` / `set` | R/W | own ⛔ (opt-out undecided, CFG-091) | rv | `DIGEST.PREFERENCE_CHANGED` |
-| `approvals.list` / `get` | R | PERM-100 | — | Approvals queue, "awaiting approval" |
-| `approvals.decide` | W | per item type (see the owning module) | rv | the item's own event |
+| `approvals.list` / `get` | R | PERM-100 | — | Approver inbox: the pending `approval_requests` (kinds DELEGATION, EMPLOYEE_DEACTIVATION, CAPAR_CLOSURE) the caller may decide; "awaiting approval" (D072) |
+| `approvals.decide` | W | per item type (see the owning module) | rv | the item's own event; writes the decision in `approval_requests` and the `status_history` row; refuses self-approval (`FORBIDDEN`, rule AR-15) except CAPAR closure by the user who endorsed it (D072) |
 
 ### 8.15 Audit, recycle bin, files, admin
 

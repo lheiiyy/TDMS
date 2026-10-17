@@ -23,6 +23,7 @@ Supporting: WF-009 Import with review · WF-010 Admin delete/restore · WF-013 R
 6. Cross-module side effects run with the **acting user's** authority and record that user (PERMISSIONS SL-12).
 7. Notifications: only those the Handover names are specified here. Where none is named the row says "none specified"; none are invented. The approved set is collected in §9.
 8. Audit event names (`ENTITY.ACTION`) are identifiers chosen by this specification (†); their content is fixed by PERMISSIONS §7.
+9. **Approvals (D072, 2026-10-17).** Every action that needs a decision by another role is an `approval_requests` row (pending / approved / rejected) shown in the approver inbox; on approval the status transition is also written to `status_history`. The kinds are DELEGATION (WF-007), EMPLOYEE_DEACTIVATION (WF-008) and CAPAR_CLOSURE (WF-004). It does not apply to the officer actions D067 allows without approval, nor to TL promotion (D031), which a Supervisor or higher performs directly. Self-approval is not allowed, except CAPAR closure (WF-004 row 5). A kind with a specific approver rule keeps it.
 
 ---
 
@@ -109,8 +110,8 @@ Required data on the case: location, audit type (shared list), audit failed date
 | 2 | Failed → **Scheduled** | S+ (officer: **TBD**, CON-05) | verification date and officer(s); target **7 working days** (as designed) | visit plan created and linked, purpose CAPAR Verification (§5.1) | overdue vs target → dashboard + digest | A; actor TBD |
 | 3 | Scheduled → **Verified** | assigned O, or S+ | finding blocks: finding no., finding, root cause, corrective action, person responsible, target date, status (one block per numbered finding, lettered sub-findings inside one corrective action); **≥ 1 failure type** for the verification visit; photos per block optional (D066) | **CAPAR Verification visit** created, or the existing one linked, by the officer who marked Verified; counts once: visit KRA +1, coverage, Store Health −4 (D062) | overdue vs target → dashboard + digest | A; whether every block must be complete **TBD** |
 | 4a | in Verified: **send to QA** | assigned O, S+ | CAPAR PDF generated from the blocks with photos under each finding; QA address from settings | PDF emailed; **send date recorded** (D030); email_log row | none specified | A |
-| 4b | Verified → **Endorsed** | assigned O, S+ | **QA endorsement date** | — | overdue vs target → dashboard + digest | A that the date is required before Closed (§5.3); **what triggers Endorsed (send vs QA confirmation) is TBD (ISS-P1-01)** |
-| 5 | Endorsed → **Closed** | S, M, Sr, A ("Supervisor approves CAPAR closures", §3) | **QA endorsement date present** | case locked | appears in "waiting for my approval" digest (§7.2) | A |
+| 4b | Verified → **Endorsed** | assigned O, S+ | **QA endorsement date** | creates the `approval_requests` row (kind CAPAR_CLOSURE, pending) with the endorser as requester (D072) | overdue vs target → dashboard + digest | A that the date is required before Closed (§5.3); **what triggers Endorsed (send vs QA confirmation) is TBD (ISS-P1-01)** |
+| 5 | Endorsed → **Closed** | S, M, Sr, A ("Supervisor approves CAPAR closures", §3): the closure is the approval of the CAPAR_CLOSURE request. **Exception to the self-approval ban, CAPAR closure only (D072):** a Supervisor, Manager, Senior Training Manager or Admin who moved the case to Endorsed may also close it; if an Officer endorsed it, a Supervisor or higher closes it | **QA endorsement date present** | case locked; both steps (endorsed, closed) are written to `status_history`; the request is approved | in the approver inbox and in the "waiting for my approval" digest (§7.2) | A; D072 for the request row and the exception |
 | 6 | (repeat failure) → new case | O, S | links to the earlier case (`follow_up_of`) | — | none specified | A |
 
 **Per-stage targets (A, §5.3, D036):** working days using the Admin holiday list; Failed→Scheduled = 7; Scheduled→Verified, Verified→Endorsed, Endorsed→Closed **open (§11)**. A case past its target is overdue on the dashboard and in the digest.
@@ -177,14 +178,14 @@ Required data on the case: location, audit type (shared list), audit failed date
 
 ## WF-007 Delegation (MOD-003) — ENT-029, 024, 026 (source: D015, Roles spec §6)
 
-**States (RS):** Pending → Approved | Rejected | Cancelled; derived by dates: Scheduled → Active → Ended.
+**States (RS):** Pending → Approved | Rejected | Cancelled; derived by dates: Scheduled → Active → Ended. **Since D072 the decision (Pending → Approved | Rejected) lives only in `approval_requests` (kind DELEGATION, approver inbox); the delegation keeps Cancelled and the derived dates.**
 
 | # | Transition | Actor | Required fields and validation | Side effects | Notifications | Tag |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | (request) → Pending | S, M, Sr | delegate, role, start date ≥ today, end date, reason; delegate holds lower access; no overlapping pending/approved delegation | — | approver; shows in "awaiting approval" digest | RS, D015 |
-| 2 | Pending → Approved | next-higher role: **M** for S, **Sr** for S and M, **A** for Sr; never the requester, **including through a delegated role** (†) | — | becomes Scheduled, then Active on the start date | requester | RS; † for delegated-role case |
-| 3 | Pending → Rejected | approver | reason | — | requester | RS |
-| 4 | Pending/Approved → Cancelled | requester | — | — | — | RS |
+| 1 | (request) → Pending | S, M, Sr | delegate, role, start date ≥ today, end date, reason; delegate holds lower access; no overlapping pending/approved delegation | creates the `approval_requests` row (kind DELEGATION, pending) | approver; shows in "awaiting approval" digest | RS, D015 |
+| 2 | Pending → Approved (decision recorded in `approval_requests`) | next-higher role: **M** for S, **Sr** for S and M, **A** for Sr; never the requester, **including through a delegated role** (†) | — | becomes Scheduled, then Active on the start date | requester | RS; † for delegated-role case |
+| 3 | Pending → Rejected (decision recorded in `approval_requests`) | approver | reason | — | requester | RS |
+| 4 | Pending/Approved → Cancelled | requester | — | a pending request for a cancelled delegation leaves the approver inbox (†, D072) | — | RS |
 | 5 | Active → Ended (early) | requester, M (for S), A (any) | reason | access removed **at once** | delegate | RS; acceptance §12 |
 | 6 | Active → Ended (date) | system | end date passed | access removed | — | RS |
 | 7 | any → Ended | system | either user deactivated (D042) | access removed | — | I |
@@ -202,9 +203,9 @@ Required data on the case: location, audit type (shared list), audit failed date
 
 | # | Transition | Actor | Required fields and validation | Side effects | Notifications | Tag |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Active → Deactivation requested | requester role **TBD (AMB-15)**; a Supervisor **cannot deactivate directly** (E-03) | employee, reason | approval request | Admin ("awaiting approval") | A (E-03); requester TBD |
-| 2 | Requested → Active (rejected) | Admin | reason | — | requester | I |
-| 3 | Requested → **Deactivated** | **Admin** (E-03) | reason | employee hidden from new entry; history, certifications and past records kept; **open items go to the supervisor queue (WF-013)**: their open TL enrollment, expiry tasks that reference their certifications, other open enrollments (D042) | supervisors (queue) | A |
+| 1 | Active → Deactivation requested | requester role **TBD (AMB-15)**; a Supervisor **cannot deactivate directly** (E-03) | employee, reason | `approval_requests` row (kind EMPLOYEE_DEACTIVATION, pending, D072) | Admin ("awaiting approval") | A (E-03); requester TBD |
+| 2 | Requested → Active (rejected) | Admin (rejects the request) | reason | request rejected | requester | I |
+| 3 | Requested → **Deactivated** | **Admin** (E-03; approves the request) | reason | request approved; employee hidden from new entry; history, certifications and past records kept; **open items go to the supervisor queue (WF-013)**: their open TL enrollment, expiry tasks that reference their certifications, other open enrollments (D042) | supervisors (queue) | A |
 **Prohibited:** direct deactivation by a Supervisor · deleting a referenced employee (only deactivation; delete only if unreferenced, §7.9) · losing history · silently dropping open items.
 **Audit events:** EMPLOYEE.DEACTIVATION_REQUESTED, .DEACTIVATED, .REJECTED.
 **Historical records:** status_history; assignments and certifications preserved; "as of" reports still show the employee.
@@ -252,7 +253,7 @@ Required data on the case: location, audit type (shared list), audit failed date
 
 | Event | Recipients | Channel | Source |
 | --- | --- | --- | --- |
-| Overdue items, items due this week, items waiting for approval | each user | one email digest every morning | §7.2, D023 |
+| Overdue items, items due this week, items waiting for approval (pending `approval_requests`, D072) | each user | one email digest every morning | §7.2, D023 |
 | Unassigned expiry tasks; overdue CAPAR stages | supervisors | daily digest | §7.2, §5.4 |
 | Unassigned or unscheduled expiry task past the Admin days | supervisors | dashboard + digest | §5.4 |
 | CAPAR stage past its working-day target | assignee, supervisors | dashboard + digest | §5.3 |

@@ -44,12 +44,13 @@ The SH and AM columns below are **provisional** (Handover text only; module list
 | AR-06 | A record outside the caller's scope is answered as "not found" (†, so existence is not leaked); a record in scope but action not allowed is FORBIDDEN. | design † |
 | AR-07 | Each user holds exactly one role; extra access only from an approved delegation. | §3, D015 |
 | AR-08 | The permission matrix is data, edited only through Configuration, every change audited with old/new and reason; effective on the next request. | §7.4 |
-| AR-09 | **Self-protection:** a user cannot change own role, deactivate self, approve own delegation, or remove the last active Admin. | Roles spec §9 |
+| AR-09 | **Self-protection:** a user cannot change own role, deactivate self, approve own delegation, or remove the last active Admin. Self-approval is banned for every approval type except CAPAR closure (AR-15). | Roles spec §9, D072 |
 | AR-10 | Edit-window rule: O edits/removes only own entries inside the window; S+ and A may still edit; the window is a setting (CFG-004). | §3, §7.4 |
 | AR-11 | Sensitive actions require a written reason: Admin edit/delete/restore, month reopen, role change, FLAG change, deactivation approval, password reset. | §7.6, D021 |
 | AR-12 | Files: opened or downloaded only through TDMS after a role/category check **on every request**; never by link. | D027 |
 | AR-13 | A closed month rejects writes dated inside it; the change is recorded with a note in the next open month. | D007, RULE-145 |
 | AR-14 | No role is invented and no matrix cell is widened without a decision in [DECISIONS](DECISIONS.md). | instruction §14 |
+| AR-15 | **Approvals (D072).** Every action that needs a decision by another role is an `approval_requests` row decided from the approver inbox (PERM-100); the transition is also written to `status_history`. Kinds: delegation, employee deactivation, CAPAR closure. Not for the officer actions D067 allows without approval, nor for TL promotion (D031, direct by S+). **Self-approval is not allowed**; a kind with a specific approver rule keeps it (delegation: the next-higher role, DL-02; employee deactivation: Admin, E-03); for a kind with none (CAPAR closure) another S, M, Sr or A decides. **Exception, CAPAR closure only:** an S, M, Sr or A who moved the case to Endorsed may also close it; if an Officer endorsed it, an S+ closes it; both steps go to `status_history`. | D072 |
 
 ## 4. System Admin powers (and limits)
 
@@ -201,7 +202,7 @@ Fine-grained codes used by `role_permissions`. The §8 matrix is the module view
 | PERM-021 | Schedule verification | ? | Y | Y | Y | Y | — | — | **Conflict** Roles spec (O "—") vs D061 (officers plan visits from a CAPAR case) |
 | PERM-022 | Mark Verified (creates verification visit) | Asg | Y | Y | Y | Y | — | — | Roles spec, D062 |
 | PERM-023 | Send report to QA / record endorsement | Asg | Y | Y | Y | Y | — | — | Roles spec "verify/endorse"; endorsement semantics open (ISS-P1-01) |
-| PERM-024 | Close case | — | Y | Y | Y | Y | — | — | §3, Roles spec |
+| PERM-024 | Close case (approves the CAPAR_CLOSURE request) | — | Y | Y | Y | Y | — | — | §3, Roles spec; D072: the S+ who endorsed may also close (AR-15) |
 | PERM-025 | Edit finding blocks / photos | Asg | Y | Y | Y | ? | — | — | INFERRED |
 | **Team Leaders** | | | | | | | | | |
 | PERM-030 | Enroll TL, record entry grades | Own | Y | Y | Y | Y (edit) | — | — | §5.7, Roles spec |
@@ -242,9 +243,9 @@ Fine-grained codes used by `role_permissions`. The §8 matrix is the module view
 | PERM-120 | View reports / export | Y | Y | Y | Y | Y | ? | ? | D013; SH/AM undefined |
 | PERM-121 | Generate Daily Activities / Store Visit Report | ? | Y | Y | Y | — | — | — | §7.1; who may generate team-wide Daily Activities undefined |
 | **Approvals & delegation** | | | | | | | | | |
-| PERM-100 | Approvals queue | — | Y | Y | Y | Y | — | — | Roles spec, "Not approved" row in §4 |
+| PERM-100 | Approvals queue (approver inbox of `approval_requests`; a user sees only the requests that role may decide) | — | Y | Y | Y | Y | — | — | Roles spec, "Not approved" row in §4; D072 |
 | PERM-101 | Request delegation | — | Y | Y | Y | — | — | — | Roles spec §6 |
-| PERM-102 | Approve delegation | — | — | Y (S requests) | Y (S, M) | Y (Sr) | — | — | Roles spec §6; nobody approves own |
+| PERM-102 | Approve delegation | — | — | Y (S requests) | Y (S, M) | Y (Sr) | — | — | Roles spec §6; nobody approves own; the decision is recorded in `approval_requests` (kind DELEGATION, D072) |
 | PERM-103 | End delegation early | — | requester | requester, M | requester | Y | — | — | Roles spec §6 |
 | **Administration** | | | | | | | | | |
 | PERM-110 | Create/edit users, roles, brands | — | — | — | — | Y | — | — | Roles spec; no self-role-change |
@@ -252,7 +253,7 @@ Fine-grained codes used by `role_permissions`. The §8 matrix is the module view
 | PERM-112 | Settings, lookups, rules | — | — | ? | — | Y | — | — | §3: Admin settings; M "master data, programs, targets"; **prototype gives S/M/Sr `vc`** |
 | PERM-113 | View audit log | — | — | — | V (incl. all Admin actions) | Y | — | — | §7.9 |
 | PERM-114 | Admin edit with reason / delete to Recycle bin / restore | — | — | — | — | Y | — | — | D021 |
-| PERM-115 | Request deactivation of employee/store/TDD user | ? | ? | ? | ? | Y | — | — | E-03: "Admin-approved request"; requester role undefined |
+| PERM-115 | Request deactivation of employee/store/TDD user | ? | ? | ? | ? | Y | — | — | E-03: "Admin-approved request"; requester role undefined. The request is an `approval_requests` row (kind EMPLOYEE_DEACTIVATION, D072); store and TDD user deactivation have no approval path stated (WF-011, WF-012) |
 | PERM-116 | Reassign/close items from a deactivation | — | Y | Y | Y | ? | — | — | D042 ("supervisor queue") |
 | PERM-117 | Set FLAG-001 (EXECom officer) | — | — | — | — | Y | — | — | D037 |
 | PERM-118 | Edit the permission matrix | ? | ? | ? | ? | ? | — | — | §7.4 "edited in Configuration"; **editor undefined** |
