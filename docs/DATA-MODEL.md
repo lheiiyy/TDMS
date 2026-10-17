@@ -129,10 +129,10 @@ Store Head/Area Manager scope (user ↔ location). Built in Phase 0; accounts li
 
 ### ENT-029 delegations — `DLG-` — MUT (status-bearing)
 - **Purpose:** temporary extra role access (D015).
-- **Fields:** from_user_id, to_user_id, role_code, start_date, end_date, reason, status, decided_by, decided_at.
-- **PK / FK:** PK id; FK from_user_id, to_user_id, role_code, decided_by.
-- **Status:** pending → approved / rejected / cancelled; derived scheduled / active / ended (Roles spec).
-- **History:** S. **Owner:** DelegationService (approval by Manager+ per matrix). Delegate gets own role plus delegator's; audit rows use the acting user, never the delegator.
+- **Fields:** from_user_id, to_user_id, role_code, start_date, end_date, reason, status. The decision (who decided, when, approved or rejected) is not stored here; it lives only in `approval_requests`, kind DELEGATION (D072, ENT-114).
+- **PK / FK:** PK id; FK from_user_id, to_user_id, role_code.
+- **Status:** cancelled, kept here; derived scheduled / active / ended from the dates, once the request is approved in `approval_requests` (Roles spec, D072).
+- **History:** S. **Owner:** DelegationService (approval by the next-higher role, DL-02, through ApprovalService). Delegate gets own role plus delegator's; audit rows use the acting user, never the delegator.
 - **Deactivation:** deactivating either user ends it. **Delete:** X. **Version:** optimistic.
 
 ### ENT-030 sessions — SYS/APP; ENT-031 password_resets — `RST-` — APP
