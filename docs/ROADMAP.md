@@ -111,7 +111,7 @@ PH-0 ─ PH-1 ─ PH-2 ─ PH-3 ─ PH-4 ─ PH-5 ─ PH-6 ─ PH-7 ─ PH-8
 | **0-002** | **G-01** | Google account that owns the scripts, sheets and Drive. Answered 2026-10-08: personal Gmail for all environments (D069). Backup editor named, not shared yet (G-08 open until sharing and 2-step verification are done) |
 | **0-002**, 1-001 | **G-03** | Organisation time zone |
 | 0-005 | AO-02 / S-06 | Confirm the account may run a web app as owner with "Anyone" access. **Confirmed 2026-10-15** on the test project: Anyone is offered and the page loads without sign-in (spike S-06 report) |
-| 2-001 | **G-05** | Approve DATA-MODEL and the history design (PROP-004) |
+| 2-001 | **G-05** | Approve DATA-MODEL and the history design (PROP-004). **Answered 2026-10-17: approved (D072)** |
 | 3-002 | CD-38 | Approve the bundle-version stamp (PROP-006) |
 | 4-005 | CD-01 | Company email address that sends reset links |
 | 5-004 | AMB-14, CD-24 | Delegation details and any maximum length |
@@ -223,7 +223,7 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | --- | --- |
 | **Phase ID** | PH-2 |
 | **Objective** | The repository, the schema registry and the provisioned tables, with concurrency, history and the job queue, so that every later module only writes through one proven path |
-| **Prerequisites** | PH-1; **G-05** (DATA-MODEL and history design approved) |
+| **Prerequisites** | PH-1; G-05 (DATA-MODEL and history design approved 2026-10-17) |
 | **Modules** | `repository/`, `config/schema/`, `core/jobs`, AuditService (writer), HistoryService (writer), `error_log` |
 | **Database work** | Schema registry generated from DATA-MODEL (ENT-001–118, profiles, text-guard, secret columns, FK map); sheet provisioner and schema check; `_meta`, `_counters`, `_migrations`; tables for settings, lookups, audit, history, jobs, schedule, error_log, files, users/sessions shells; tables of modules whose blockers (M2–M5, M7) are open are registered but marked **deferred** and not provisioned |
 | **Backend work** | Header-driven reader/writer; `get`, `list` (scope argument mandatory), insert/append/update/insertVersion; `row_version`; counters under lock; unit of work and flush order; audit and history writers; cache epochs for reference tables; job queue and worker; environment guard with `_meta`; synthetic seed framework |
@@ -236,11 +236,11 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 
 | ID | Type | Task | Depends | Blocked by | Tests | Size |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2-001 | D | Generate the schema registry from DATA-MODEL (all entities, columns, profiles, text-guard, `secret`, FK map, ID prefixes) + registry lint tests (FK targets exist, MUT has `row_version`, prefixes unique, deferred tables flagged) | 1-005 | **G-05** | DATA | M |
+| 2-001 | D | Generate the schema registry from DATA-MODEL (all entities, columns, profiles, text-guard, `secret`, FK map, ID prefixes) + registry lint tests (FK targets exist, MUT has `row_version`, prefixes unique, deferred tables flagged) | 1-005 | — | DATA | M |
 | 2-002 | T | Implement the sheet provisioner and schema check tools (create tabs and headers from the registry, text-format guard columns, `_meta`/`_counters`/`_migrations`, additive migration runner); run on dev and test | 2-001, 0-003 | — | DATA | M |
 | 2-003 | D | Implement repository reads (header-driven loader, `get` by ID, `list` with filters/sort/paging ≤ 50, mandatory scope argument, secret-column exclusion, text coercion) + in-memory twin + contract suite | 2-002, 1-004 | — | DATA | L |
 | 2-004 | D | Implement repository writes (insert, append, update with `row_version`, `insertVersion` with `supersedes_id`, counters under lock, profile columns, unit of work with fixed flush order) + concurrency contract tests | 2-003 | — | DATA, PLAT | L |
-| 2-005 | S | Implement AuditService and HistoryService writers (audit_log, status_history, record_history inside the unit of work, append-only interfaces, `request_id`, `error_log` with failed-flush payload) + AUDIT tests | 2-004 | **G-05** | AUDIT | M |
+| 2-005 | S | Implement AuditService and HistoryService writers (audit_log, status_history, record_history inside the unit of work, append-only interfaces, `request_id`, `error_log` with failed-flush payload) + AUDIT tests | 2-004 | — | AUDIT | M |
 | 2-006 | T | Implement the environment guard (`ENV` vs `_meta` marker), schema-version check at start and the maintenance flag (read-only mode) + tests | 2-004 | — | PLAT | S |
 | 2-007 | D | Implement the cached reference-table reader (epoch bump on write, TTL, per-request memo, eviction fallback) + tests | 2-004, 1-004 | — | DATA, PLAT | M |
 | 2-008 | J | Implement the job queue, schedule table, worker (5-minute trigger installer, owner-run), time budget, resumable cursor, retry/back-off, dedupe, `Failed` handling + tests with fake jobs | 2-004, 1-004 | — | JOB | L |
@@ -341,7 +341,7 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | --- | --- |
 | **Phase ID** | PH-6 |
 | **Objective** | Make the audit trail visible and the Admin powers safe, and add the services every module relies on: files, backup, queue, integrity, health |
-| **Prerequisites** | PH-5; G-05 (history design); G-02 for backup; CD-25 for purge |
+| **Prerequisites** | PH-5; G-05 (history design, approved 2026-10-17); G-02 for backup; CD-25 for purge |
 | **Modules** | AuditService (viewer), AdminService, RecycleService, FileService, BackupService, IntegrityService, configuration screens |
 | **Database work** | `recycle_bin`, `reassignment_queue` (table or view, ISS-P1-16), `files`, `backup_log`; audit archive structure |
 | **Backend work** | Audit viewer with cursor paging; Admin edit with reason; Recycle bin delete/restore with unreferenced check; reassignment queue; FileService (private Drive, validation, `sha256`, role-checked open, no sharing); nightly backup and extra backups; integrity job; health API; restore tool |
@@ -381,13 +381,13 @@ Each phase has: objective, prerequisites, modules, database work, backend work, 
 | **Tests** | EMP (identity-adjacent), ADMIN, TEST-PERM for PERM-061, TEST-CFG |
 | **Documentation** | DATA-MODEL M-items closed for these tables; migration notes |
 | **Acceptance criteria** | A store other records point to cannot be deleted, only deactivated; only Store-type locations count in coverage; import saves nothing until the review shows every row valid or skipped; commit takes a backup first |
-| **Risks** | Wrong seed lists; import engine too specific to one source; location type growth (CD-03) |
+| **Risks** | Wrong seed lists; import engine too specific to one source; location types are a lookup Admin can extend (D072) |
 | **Definition of done** | Slice DoD; **schema freeze SG-3b** tagged |
 
 | ID | Type | Task | Depends | Blocked by | Tests | Size |
 | --- | --- | --- | --- | --- | --- | --- |
 | 7-001 | S | Implement brands and regions (CRUD, code immutable, deactivate, history F) + permissions (PERM-061) + validation + API + tests | 6-009 | Leo's lists | TEST-PERM, ADMIN | M |
-| 7-002 | S | Implement locations/stores (typed per D045, brand, region, frequency, status, unique name per brand) + permissions + validation + API + tests | 7-001 | CD-03 | TEST-PERM, ADMIN | M |
+| 7-002 | S | Implement locations/stores (typed per D045, brand, region, frequency, status, unique name per brand) + permissions + validation + API + tests | 7-001 | — | TEST-PERM, ADMIN | M |
 | 7-003 | S | Implement positions (level, requires HO tech val), stations (certification required, brand scope) and programs + permissions + validation + API + tests | 7-001 | — | TEST-PERM, ADMIN | M |
 | 7-004 | S | Implement the WF-011 location-deactivation skeleton (status history, queue hook registry for later modules, past records keep the location ID) + tests | 7-002, 6-004 | — | ADMIN | S |
 | 7-005 | J | Implement the generic ImportService (staging, validation framework, preview, fix/skip, confirm, `legacy_ref`, backup before commit) and use it to import brands, locations, positions, stations | 7-003, 6-006 | Leo's lists | ADMIN | L |
@@ -832,4 +832,4 @@ OPEN ISSUES BLOCKING: G-04 only. (G-01, G-02, G-03 do not block this task.)
 
 ---
 
-**ROADMAP READY FOR IMPLEMENTATION START: conditional on G-04 for TDMS-0-001; Phase 0 slices 0-002 onward need G-01 and G-03; the first data-layer slice (2-001) needs G-05.**
+**ROADMAP READY FOR IMPLEMENTATION START: conditional on G-04 for TDMS-0-001; Phase 0 slices 0-002 onward need G-01 and G-03; the first data-layer slice (2-001) needed G-05, which Leo answered on 2026-10-17.**

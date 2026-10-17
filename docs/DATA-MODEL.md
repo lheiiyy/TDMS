@@ -1,8 +1,8 @@
 # TDMS Logical Data Model v1.0
 
-Status: **FINAL logical model, subject to the blockers in §10.** Replaces v0.1. No SQL, no spreadsheet created.
+Status: **FINAL logical model. Approved by Leo on 2026-10-17 (gate G-05, D072); items still open are listed in §15.** Replaces v0.1. No SQL, no spreadsheet created.
 Authority: Handover (§7.5, §7.6, §7.9, §7.10, §8, D001–D068) > Plan Audit > prototype. Requirements: [REQUIREMENTS](REQUIREMENTS.md). Decisions: [DECISIONS](DECISIONS.md). Open items: [DECISION-GATE](DECISION-GATE.md), [ISSUE-REGISTER](ISSUE-REGISTER.md).
-Marks: unmarked = stated in an approved source or a direct consequence of it · **†** = proposed by this model, needs the packet or owner to confirm · **TBD** = value not yet decided (not invented here).
+Marks: unmarked = stated in an approved source or a direct consequence of it · **†** = proposed by this model; approved by Leo on 2026-10-17 (G-05) unless the entry carries its own pending flag (for example PROP-001, D051, ISS-P1-02, a TBD value), which stays open · **TBD** = value not yet decided (not invented here).
 
 ## 1. Principles (apply to every entity)
 
@@ -57,7 +57,7 @@ Year digits derive from the record date, never hard-coded (§8). Counters live i
 
 ## 3. History and audit architecture
 
-Adopted as the model's design (**pending owner approval, gate item G-05**). It consolidates the three overlapping mechanisms in §7.5 / §7.6 / §7.10 / D023 / D048:
+Adopted as the model's design. **Approved by Leo on 2026-10-17 (gate G-05, PROP-004, D072).** It consolidates the three overlapping mechanisms in §7.5 / §7.6 / §7.10 / D023 / D048:
 
 | Store | Holds | Mutable | Use |
 | --- | --- | --- | --- |
@@ -65,13 +65,13 @@ Adopted as the model's design (**pending owner approval, gate item G-05**). It c
 | `status_history` (HIS) | one row per status transition: entity, record id, from, to, `effective_date`, remark, user, time | no | "as of date" reads, month snapshots, EXECom |
 | `record_history` (HIS) | field-level old/new for **designated entities** (marked F below) | no | D048, D008, edit traceability |
 
-Open point folded into the approval: whether §7.10 "one row per changed field, for every table" means all tables or all history-bearing tables. The model assumes history-bearing tables (marked F).
+Resolved 2026-10-17 (D072): §7.10 "one row per changed field" applies to history-bearing tables only (marked F), not to every table.
 
 ## 4. Core people, identity, access
 
 ### ENT-020 persons — `PER-` — MUT
 - **Purpose:** one record per human, for life; identity anchor for employee, trainee, TL, user.
-- **Fields:** first_name, middle_name, last_name, suffix, mobile (text), birth_date (optional), legacy_ref†.
+- **Fields:** first_name, middle_name, last_name, suffix, mobile (text), birth_date (optional; used only in the duplicate check, D072), legacy_ref†.
 - **PK / FK:** PK person_id. No FK.
 - **Relationships:** 1—0..1 employee · 1—0..n trainee_enrollments · 1—0..n tl_enrollments · 1—0..1 user · 1—n person_aliases.
 - **Status:** none; `is_active`.
@@ -147,7 +147,7 @@ Sessions: token_hash, user_id, last_activity, ended_at (storage design in the Au
 - **Owner:** SettingsService; Admin unless the key's "who" says otherwise. **Deact/Delete:** X. **Version:** insert-only; a change inserts a new version.
 
 ### ENT-003 lookups — `LKP-` — MUT
-Lists: audit/failure type (one shared list, D010), visit purpose, employee status, training type, session type, library category, TL quit reason, store frequency, QA status (values TBD). Fields: category, value, label, sort_order, is_system. History F. Owner LookupService. Deactivate D (system items cannot be disabled). Delete B only if never referenced. Optimistic.
+Lists: audit/failure type (one shared list, D010), visit purpose, employee status, training type, session type, library category, TL quit reason, store frequency, **location type** (D072), QA status (values TBD). Fields: category, value, label, sort_order, is_system. History F. Owner LookupService. Deactivate D (system items cannot be disabled). Delete B only if never referenced. Optimistic.
 
 ### ENT-004 holidays — `HOL-`† — MUT
 date, name, scope. Used for working-day counts (D036). Owner SettingsService. History F. Deactivate D; Delete B. Optimistic.
@@ -162,7 +162,7 @@ drive_file_id (private), owner_record_type/id, kind, mime, size, sha256†, uplo
 Purpose: in-app tasks and alerts (§7.2). Fields: recipient_user_id, kind, record_type/id, created_at, read_at. FK recipient. History A. Owner NotificationService. Deactivate D (dismissed). Delete X. Optimistic.
 
 ### ENT-007 email_log — `EML-`† and ENT-008 ai_call_log — `AIL-`† — APP
-to/user, template, record ref, sent_at, result (CAPAR PDF send date lives here and on the case, D030); AI: user, record, provider, model, time, result (§7.11, D065 conditional). History A. Owner NotificationService / AiService. Delete X.
+to/user, template, record ref, sent_at, result (CAPAR PDF send date lives here and on the case, D030); AI: user, record, provider, model, time, result (§7.11, D065 conditional). **`ai_call_log` stays a placeholder until the AI decision (ISS-P0-18).** History A. Owner NotificationService / AiService. Delete X.
 
 ## 6. Organisation and master data
 
@@ -173,8 +173,8 @@ code (permanent), name, colour. History F. Owner MasterDataService. D; B if unre
 name. Filter only, not an assignment (D005). F. D; B if unreferenced.
 
 ### ENT-012 locations — `LOC-` — MUT   (this is also **Store**)
-- **Purpose:** every physical/organisational place. **A Store is a location whose `location_type` = Store**; there is no separate store table (D045). Only Store type counts in visits, coverage and Store Health.
-- **Fields:** location_type (Store, Commissary, Office, Call Center, Warehouse), name, brand_id, region_id, status, date_opened, date_closed, visit_frequency (lookup), ownership_type, address†.
+- **Purpose:** every physical/organisational place. **A Store is a location whose `location_type` = Store**; there is no separate store table (D045). Only Store type counts in visits, coverage and Store Health, whatever other types are added.
+- **Fields:** location_type (a value of the lookup category `location_type`, ENT-003: Admin can add values; the seeded values are Store, Commissary, Office, Call Center, Warehouse; **Store is a system value and cannot be disabled**; D072), name, brand_id, region_id, status, date_opened, date_closed, visit_frequency (lookup), ownership_type, address†.
 - **PK / FK:** PK location_id; FK brand_id, region_id.
 - **Status:** active / closed (+ system active flag). **History:** S + F.
 - **Source/owner:** MasterDataService. **No fixed store owner** (D026).
@@ -221,9 +221,9 @@ enrollment_id, station_id, status (passed/failed/in progress†), final_grade (s
 
 ### ENT-043 assessments — `ASM-` — APP (corrections append)  (**TL Assessments** = rows with subject_type TL_ENROLLMENT)
 - **Purpose:** every grade entry for trainee station results, TL enrollments and cross-training; the single grade store.
-- **Fields:** subject_type, subject_id, component_id, score, assessed_on, assessed_by (user_id), retake_no, remark, supersedes_id (correction).
+- **Fields:** subject_type, subject_id, component_id, score, assessed_on, assessed_by (user_id), retake_no, remark, supersedes_id (correction), **correction_reason (required when supersedes_id is set; D072)**.
 - **PK / FK:** PK id; FK component_id, assessed_by; polymorphic subject (validated by service).
-- **Status:** none; superseded rows keep history. **History:** F by construction (corrections link via supersedes_id).
+- **Status:** none; superseded rows keep history. **History:** F by construction (corrections link via supersedes_id). **Grade correction (D072):** a new assessments row linked by `supersedes_id` with a required `correction_reason`; the latest row of the chain (the row no other row supersedes) is the one that counts; grades are never edited directly. `remark` stays the assessor's ordinary comment and is not the reason.
 - **Source/owner:** AssessmentService. **Deact/Delete:** X. **Version:** none (append-only).
 
 ### ENT-044 training_sessions — `SES-` — MUT
@@ -261,7 +261,7 @@ tl_enrollment_id, extension_no, old_deadline, new_deadline, reason. History: par
 ### ENT-062 tl_certifying_officers — `TLO-`† — APP
 tl_enrollment_id, user_id, role_in_cert†. Owner TlService. Delete X.
 ### ENT-063 uniform_transactions — `UNF-` — APP
-tl_enrollment_id, type (issue/return/receive), item, size, qty, dr_no, date, user_id; uniqueness guard on dr_no+item†. Owner TlService. Delete X.
+tl_enrollment_id, type (issue/return/receive), item, size, qty, dr_no, date, user_id. **No uniqueness guard (D072):** the same DR number, item and size may repeat; rows stay append-only (history). A **soft duplicate warning** (not a block) is shown when the same DR number + item + size already exist; the detail is confirmed in the TL packet. Owner TlService. Delete X.
 ### ENT-064 TL history — **view** over status_history + record_history for ENT-060/061/062/043, not a table.
 
 ### ENT-070 station_certifications — `CRT-` (**Certification**) — MUT
@@ -317,7 +317,7 @@ capar_id, user_id. Owner CaparService. Delete X.
 capar_id, finding_no (as in the source report), finding_text, root_cause, status, ai_drafted flag (D065 conditional). One block per numbered finding; lettered sub-findings stay inside the block. FK capar_id. History F. Owner CaparService. Deactivate D; Delete X after Scheduled; B before. Optimistic.
 
 ### ENT-094 capar_corrective_actions — `CCA-`† (**CAPAR Corrective Action**) — MUT
-finding_id, action_text, person_responsible_user_id (or named person), target_date, status, completed_on. Cardinality: one per finding in v1†; separate table so 1..n needs no migration (**confirm in the CAPAR packet**, "structured corrective actions" D023). History F. Owner CaparService. Deactivate D. Delete X. Optimistic.
+finding_id, action_text, person_responsible_user_id (or named person), target_date, status, completed_on. Cardinality: **one corrective action per numbered finding in v1** (lettered sub-findings stay in the same block); the separate table stays so 1..n needs no migration later (M4 resolved 2026-10-17, D072; "structured corrective actions" D023). History F. Owner CaparService. Deactivate D. Delete X. Optimistic.
 
 ### ENT-093 capar_finding_photos — `CFP-`† — APP
 finding_id, file_id. Limits TBD (D066). Owner CaparService. Delete X.
@@ -348,7 +348,7 @@ Category: name, parent, allowed types, view/upload roles. Resource: title, kind,
 LMS question: question, asker_user_id, brand_id, assignee_user_id, answer, status (open / answered / published†), published_faq_id. History S. Owner LibraryService. Non-AI help (D014). D; B if unanswered and unreferenced.
 
 ### ENT-114 approval_requests — `APR-`† (**Approval**) — MUT
-kind (e.g. deactivation request), subject_type/id, requested_by, status (pending/approved/rejected), decided_by, decided_at, remark. **CAPAR closure, TL promotion and similar approvals are state transitions** recorded in status_history, not rows here (INFERRED). History S. Owner ApprovalService. Delete X. Optimistic.
+kind (DELEGATION, EMPLOYEE_DEACTIVATION or CAPAR_CLOSURE; a further kind only by a later decision), subject_type/id, requested_by, status (pending/approved/rejected), decided_by, decided_at, remark. **Rule (D072, decided 2026-10-17):** every action that needs a decision by another role is an approval_requests row (pending / approved / rejected) shown in an approver inbox; on approval the status transition is also written to status_history. This does **not** apply to actions D067 lets an officer do without approval (certify, extend, close, quit), nor to TL promotion (D031), which a Supervisor or higher performs directly with no request. **Self-approval is not allowed:** another Supervisor or higher approves, but a kind with a specific approver rule keeps it (delegation: the next-higher role, DL-02; employee deactivation: Admin, E-03). **One exception, CAPAR closure only:** a Supervisor, Manager, Senior Training Manager or Admin who moved the case to Endorsed may also close it; if an Officer endorsed it, a Supervisor or higher closes it; both steps are written to status_history. History S. Owner ApprovalService. Delete X. Optimistic.
 ### ENT-115 reassignment_queue — `RAQ-`† — MUT (or a view)
 open items from a deactivation: source_type/id, previous_owner, reason (D042), status, resolved_by, resolution (reassigned / closed with reason), remark. History S. Owner AdminService. Delete X. Whether table or view: ISS-P1-16.
 ### ENT-116 recycle_bin — `RCB-` (**Recycle Bin**) — APP
@@ -416,18 +416,18 @@ brands/regions/positions/stations/lookups → ENT-010/011/013/014/003 · stores 
 
 | ID | Question | Scope | Blocks |
 | --- | --- | --- | --- |
-| M1 | Approve the history architecture in §3 (three stores; field history on designated tables) — gate G-05 | all history-bearing tables | **foundation tables** |
+| M1 | **RESOLVED 2026-10-17 (gate G-05, D072):** history architecture in §3 approved (three stores; field history on designated tables marked F) | all history-bearing tables | nothing |
 | M2 | Visit plan and visit log as two linked entities (PROP-001) | ENT-080/081 | PH-9 tables only |
 | M3 | Trainee extension semantics, limit, correction path (ISS-P1-02) | ENT-041 (+ extension rows if needed) | PH-11 tables only |
-| M4 | CAPAR corrective-action cardinality (1 per finding vs 1..n) | ENT-092/094 | PH-10 tables only |
+| M4 | **RESOLVED 2026-10-17 (D072):** one corrective action per numbered finding in v1; the separate table stays so 1..n needs no migration | ENT-092/094 | nothing |
 | M5 | Expiry task status names and grouping rule (§5.4) | ENT-072 | PH-13 tables only |
 | M6 | Visit purpose for an expiry visit (ISS-P1-08) | ENT-081 link only | no schema change |
 | M7 | Reassignment queue: table or view (ISS-P1-16) | ENT-115 | PH-6 only |
 | M8 | Who edits `role_permissions` (G-06) | ENT-026 write rules, not structure | no schema change |
 
-Resolved here (not blockers): snapshot storage = rows (P10); Store = location subtype (D045); TL history = view; audit fields via profiles.
+Resolved here (not blockers): snapshot storage = rows (P10); Store = location subtype (D045), with location types in a lookup Admin can extend (D072); TL history = view; audit fields via profiles. Resolved 2026-10-17 (D072): M1, M4.
 
-**DATA MODEL BLOCKERS: YES** — one blocker for the foundation tables: **M1 / gate G-05** (approve the history architecture). Five further items (M2–M5, M7) block only their own module's tables and do not stop the foundation. No blocker comes from time zone, role-permission editor or TL formula (settings and write rules, not structure).
+**DATA MODEL BLOCKERS: NONE for the foundation tables** (M1 / gate G-05 was resolved on 2026-10-17). The items still open (M2, M3, M5, M7) block only their own module's tables; M6 and M8 change no schema. Also open: the coaching survey source and the "Closing" state (PROP-003). No blocker comes from time zone, role-permission editor or TL formula (settings and write rules, not structure).
 
 ## 15. Rule-stamp amendments (from CONFIGURATION v1.0 Part 2; proposal PROP-006, pending CD-38)
 

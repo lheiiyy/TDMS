@@ -86,7 +86,8 @@ Checked against: Handover (D1–D68, §3, §9, §10, §11), Plan Audit, and the 
 - Decision: approve the entity list and the history design, or amend.
 - Recommended: approve; the mechanism consolidates, it adds no business rule.
 - If different: three overlapping history stores, double-write risk, larger cells.
-- **Update 2026-10-08 (Leo):** method decided: **guided review**. The planner gives Leo a short summary per part of DATA-MODEL plus a question checklist, and Leo approves after. **Status: still pending Leo's approval, before slice 2-001. DATA-MODEL is not approved.**
+- **Update 2026-10-08 (Leo):** method decided: **guided review**. The planner gives Leo a short summary per part of DATA-MODEL plus a question checklist, and Leo approves after.
+- **Answered 2026-10-17 (Leo): approved.** DATA-MODEL and the history design (PROP-004) are approved, with the decisions recorded in D072 (history on history-bearing tables only, location types as a lookup, grade correction, uniform transactions, CAPAR corrective actions, approvals). Open items stay open: M2, M3, M5, M6, M7, M8, `ai_call_log` (ISS-P0-18), the coaching survey source and the "Closing" state. **Slice 2-001 is no longer blocked by G-05.**
 
 ### B3. Blocks authorization slice (1D)
 
@@ -157,7 +158,7 @@ Checked against: Handover (D1–D68, §3, §9, §10, §11), Plan Audit, and the 
 ## C. BLOCKING (consolidated)
 
 **Before Phase 0 starts:** G-01, G-02, G-03, G-04.
-**Before the first data-layer slice (1A):** G-05.
+**Before the first data-layer slice (1A):** G-05 (answered 2026-10-17).
 **Before authorization (1D):** G-06.
 **Before the import slice (1F):** G-07. **Before the first real data import into live:** G-08 (backup editor sharing set up), G-09 (connectors disabled), and slice 2-006 (environment guard run-time refusal).
 **Before the named module:** every row in B4 (Visits/CAPAR: ISS-P0-18, P1-01, P1-06, P1-10, P1-15, P1-19, holiday list; Trainee: P1-02, P1-12, P1-20; TL: P1-03, P1-04; Proficiency: P1-05, P1-08, P1-11; KPI/close: P1-09, P0-16, P1-13).
@@ -190,7 +191,7 @@ Exact blockers:
 3. **G-03** Confirm the organisational time zone (gap found in this baseline).
 4. **G-04** Approve or amend the repository layout / environment setup (HANDOFF-MODEL §7).
 
-Before the first data-layer task (not before bootstrapping the repo): **G-05** approve DATA-MODEL and the history design.
+Before the first data-layer task (not before bootstrapping the repo): **G-05** approve DATA-MODEL and the history design (answered 2026-10-17).
 Also tick §11 item 1 as resolved: D2/§3/§9 already settle Store Head and Area Manager (role in the model now, accounts in v2).
 
 ## Gate answers recorded (Leo, 2026-10-08)
@@ -203,7 +204,7 @@ Also tick §11 item 1 as resolved: D2/§3/§9 already settle Store Head and Area
 | G-02 | Keep **14** nightly backups (CFG-093 = 14; also resolves ISS-P1-14 and CD-22 count; file-backup scope AO-05 stays open). | Slice 6-006 unblocked. |
 | PROP-005 | **Approved:** Store Health rules take the CAPAR failure list as an input parameter (9-005); real CAPAR data wired in 10-008. | ROADMAP conflict R-06 closed. |
 | PROP-006 / CD-38 | **Approved:** each result stores one bundle-version stamp (DM-A0, DM-A1..A12). | Slice 3-002 unblocked. |
-| G-05 | **Pending, method decided (2026-10-08): guided review.** The planner gives Leo a short summary per part of DATA-MODEL plus a question checklist; Leo approves after. DATA-MODEL is **not** approved. | Slice 2-001 stays blocked until Leo approves. |
+| G-05 | **Answered (2026-10-17): approved.** DATA-MODEL and the history design (PROP-004) are approved; decisions in D072. Open items stay open (M2, M3, M5, M6, M7, M8, `ai_call_log`, coaching survey source, "Closing" state). | Slice 2-001 is no longer blocked by G-05. |
 | G-01 (live, D069) | **Decided:** the live environment uses the same personal Gmail `lheii.fcsitraining@gmail.com` as dev and test, not a company account. It must be easy to transfer to another email. This supersedes the "live stays blocked until the company account is named" part of the G-01 row above. | 0-004 (live shell) is unblocked. D012 is superseded by D069. Transfer path: [account-transfer runbook](runbooks/account-transfer.md), to verify in spike S-09 (slice 0-011). |
 | G-08 | **Answered (2026-10-08):** backup editor = `Hrad.tnd@gmail.com` (spelling confirmed by Leo, 2026-10-09). Not shared yet; **still open** until sharing and 2-step verification (both accounts) are done. Leo shares by hand, only when Leo says, only on the `TDMS-live` folder and the "TDMS live" Apps Script project, never the mother folder `TDMS` (D070). Only Leo holds the password of this mailbox. Recorded later in setting CFG-107 (a record only). | Sharing must be set up BEFORE the first real data import (G-07, slice 1F). |
 | G-09 | **Answered (2026-10-08):** disable the Claude Drive/Sheets connectors for the live account before the first real employee data (HR masterlist, G-07) enters live. Not done yet. Still no real data in live before slice 2-006. | Do it before G-07 data enters live. |

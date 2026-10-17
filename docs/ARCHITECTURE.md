@@ -388,7 +388,7 @@ Quotas: all users run as the owner, so Apps Script quotas apply to one account (
 
 ## 8. Audit logging
 
-Design adopted pending gate G-05 (PROP-004): one mechanism, three views.
+Design approved by Leo on 2026-10-17 (gate G-05, PROP-004, D072): one mechanism, three views.
 
 | Store | Written by | Content |
 | --- | --- | --- |
@@ -694,7 +694,7 @@ History written without a rule stamp cannot gain one afterwards. That is why CON
 | AO-04 | Meaning of "Google Sheets" report output (AD-15) | Report slice | Downloadable .xlsx; no sharing |
 | AO-05 | Backup of files (§9, §17) | Hardening | No hard deletes + `sha256` verification + Drive versions |
 | AO-06 | Backup retention count (gate G-02 / CD-22) | Backup slice | Leo's number |
-| AO-07 | Approval of the history design (gate G-05 / PROP-004) | First data-layer slice | Approve |
+| AO-07 | Approval of the history design (gate G-05 / PROP-004) | First data-layer slice | **Answered 2026-10-17: approved (D072)** |
 | AO-08 | Bundle-version stamp design (CD-38 / PROP-006) | Data layer (stamps) | Adopt |
 
 ---
